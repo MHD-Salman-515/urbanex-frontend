@@ -53,7 +53,7 @@ export default function WorkerLayout() {
   const userStorageKey = useMemo(() => {
     const scopedUserKey = user?.id ?? user?.email;
     if (!scopedUserKey) return null;
-    return `creos_notifications__${String(scopedUserKey)}`;
+    return `urbanex_notifications__${String(scopedUserKey)}`;
   }, [user?.id, user?.email]);
 
   useEffect(() => {
@@ -168,7 +168,7 @@ export default function WorkerLayout() {
     <aside className="flex h-full flex-col border-e border-white/10 bg-[#050912]/90 backdrop-blur-xl">
       <div className="border-b border-white/10 px-4 py-5">
         <p className="text-[11px] uppercase tracking-[0.16em] text-white/90">
-          CREOS Worker
+          Urbanex Worker
         </p>
         <h2 className="mt-1 text-lg font-semibold text-white">Service Desk</h2>
         <div className="mt-2 text-[11px] text-slate-300">
@@ -226,7 +226,7 @@ export default function WorkerLayout() {
                   aria-haspopup="menu"
                   aria-expanded={brandMenuOpen}
                 >
-                  CREOS
+                  Urbanex
                 </button>
                 {brandMenuOpen ? (
                   <div className="absolute left-0 top-full z-40 mt-2 w-64 rounded-2xl border border-white/10 bg-[#050912]/95 p-2 backdrop-blur-xl">

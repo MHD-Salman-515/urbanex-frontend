@@ -2,13 +2,13 @@
 
 export default function Services() {
   return (
-    <div className="creos-theme relative min-h-screen overflow-hidden bg-[var(--creos-bg)] text-[var(--creos-text)]">
+    <div className="urbanex-theme relative min-h-screen overflow-hidden bg-[var(--urbanex-bg)] text-[var(--urbanex-text)]">
 
       <main className="relative z-10 mx-auto w-full max-w-6xl space-y-6 px-4 pb-12 pt-10 lg:px-0">
         <div>
           <h1 className="text-2xl font-bold md:text-3xl">Services</h1>
           <p className="mt-2 max-w-3xl text-sm text-slate-300 md:text-base">
-            CREOS helps users move from property discovery to booking and follow-up with clear, trackable workflows.
+            Urbanex helps users move from property discovery to booking and follow-up with clear, trackable workflows.
           </p>
         </div>
 

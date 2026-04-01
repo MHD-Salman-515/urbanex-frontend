@@ -1,0 +1,40 @@
+:root {
+  --urbanex-bg: #000000;
+  --urbanex-surface: #000000;
+  --urbanex-text: #ffffff;
+  --urbanex-muted: #b3b3b3;
+  --urbanex-accent: #ffffff;
+
+  --urbanex-surface-rgb: 0 0 0;
+  --urbanex-accent-rgb: 255 255 255;
+  --urbanex-text-rgb: 255 255 255;
+}
+
+.urbanex-theme {
+  background-color: var(--urbanex-bg);
+  color: var(--urbanex-text);
+}
+
+.urbanex-surface {
+  background-color: var(--urbanex-surface);
+}
+
+.urbanex-text {
+  color: var(--urbanex-text);
+}
+
+.urbanex-muted {
+  color: var(--urbanex-muted);
+}
+
+.urbanex-accent {
+  color: var(--urbanex-accent);
+}
+
+.urbanex-accent-bg {
+  background-color: var(--urbanex-accent);
+}
+
+.urbanex-accent-border {
+  border-color: rgb(var(--urbanex-accent-rgb) / 0.4);
+}

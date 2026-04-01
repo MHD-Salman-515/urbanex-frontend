@@ -1,6 +1,6 @@
 ﻿export default function About() {
   return (
-    <div className="creos-theme relative min-h-screen overflow-hidden bg-[var(--creos-bg)] text-[var(--creos-text)]">
+    <div className="urbanex-theme relative min-h-screen overflow-hidden bg-[var(--urbanex-bg)] text-[var(--urbanex-text)]">
 
       <main className="relative z-10 mx-auto w-full max-w-6xl space-y-6 px-4 pb-12 pt-10 lg:px-0">
         <section className="pt-2">
@@ -13,7 +13,7 @@
                   <span>Platform Rights And Operating Standards</span>
                 </div>
                 <h1 className="text-2xl font-bold md:text-3xl">
-                  Safe And Transparent Usage For <span className="text-white/90">CREOS</span>
+                  Safe And Transparent Usage For <span className="text-white/90">Urbanex</span>
                 </h1>
                 <p className="max-w-3xl text-sm text-slate-300 md:text-base">
                   Before browsing, booking, or submitting requests, users should understand the core principles that keep
@@ -35,7 +35,7 @@
                 <div className="space-y-2 rounded-2xl border border-white/15 bg-black/35 p-4">
                   <h3 className="font-semibold text-white">About The System</h3>
                   <p className="text-slate-300">
-                    CREOS is designed as a centralized real estate operations system to align discovery, visits, support,
+                    Urbanex is designed as a centralized real estate operations system to align discovery, visits, support,
                     and operational communication in one experience.
                   </p>
                 </div>

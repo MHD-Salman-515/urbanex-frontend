@@ -40,7 +40,7 @@ export default function DashboardLayout({
   const shellPadding = sidebarCollapsed ? "lg:pl-24" : "lg:pl-72";
 
   return (
-    <div className="creos-theme relative min-h-screen overflow-hidden bg-[var(--creos-bg)] text-[var(--creos-text)]">
+    <div className="urbanex-theme relative min-h-screen overflow-hidden bg-[var(--urbanex-bg)] text-[var(--urbanex-text)]">
       <aside
         className={`fixed inset-y-0 left-0 z-40 hidden border-r border-white/10 bg-[#060b12]/95 backdrop-blur-xl lg:block ${
           sidebarCollapsed ? "w-20" : "w-68"
@@ -50,7 +50,7 @@ export default function DashboardLayout({
           <Link to="/home" className="flex items-center gap-2">
             <Logo className="text-white/90" size={20} />
             {!sidebarCollapsed && (
-              <span className="text-sm font-semibold tracking-[0.18em] text-white">CREOS</span>
+              <span className="text-sm font-semibold tracking-[0.18em] text-white">Urbanex</span>
             )}
           </Link>
           <button
@@ -92,7 +92,7 @@ export default function DashboardLayout({
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Logo className="text-white/90" size={20} />
-              <span className="text-sm font-semibold tracking-[0.18em] text-white">CREOS</span>
+              <span className="text-sm font-semibold tracking-[0.18em] text-white">Urbanex</span>
             </div>
             <button
               type="button"

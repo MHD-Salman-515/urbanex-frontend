@@ -23,7 +23,7 @@ export default function HomeRadialProperties() {
   return (
     <div id="quick-search" className="min-h-screen w-full bg-transparent overflow-x-hidden text-white">
       <div className="h-[300px] flex flex-col items-center justify-center px-4 text-center">
-        <p className="mb-3 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">CREOS</p>
+        <p className="mb-3 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Urbanex</p>
         <h2 className="text-3xl font-bold tracking-tight md:text-5xl">Featured Properties</h2>
         <p className="mt-4 animate-bounce text-xs uppercase tracking-[0.25em] text-muted-foreground">↓ Scroll</p>
       </div>

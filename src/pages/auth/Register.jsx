@@ -97,7 +97,7 @@ export default function Register() {
   return (
     <>
       <AuthComponent
-        brandName="CREOS"
+        brandName="Urbanex"
         logo={<CustomLogo />}
         onRequestOtp={requestOtp}
         onVerifyOtp={verifyOtp}

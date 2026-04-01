@@ -2,7 +2,7 @@
 
 export default function Contact() {
   return (
-    <div className="creos-theme relative min-h-screen overflow-hidden bg-[var(--creos-bg)] text-[var(--creos-text)]">
+    <div className="urbanex-theme relative min-h-screen overflow-hidden bg-[var(--urbanex-bg)] text-[var(--urbanex-text)]">
 
       <main className="relative z-10 mx-auto w-full max-w-6xl space-y-6 px-4 pb-12 pt-10 lg:px-0">
         <section className="rounded-3xl border border-white/10 bg-black/45 p-6 backdrop-blur-xl md:p-8">
@@ -14,7 +14,7 @@ export default function Contact() {
           <div className="mt-6 grid gap-4 md:grid-cols-3">
             <div className="rounded-xl border border-white/15 bg-black/30 p-4">
               <div className="text-xs uppercase tracking-wide text-white/90">Email</div>
-              <div className="mt-2 text-sm text-slate-100">SalmanSystemAdmin@creos.example</div>
+              <div className="mt-2 text-sm text-slate-100">SalmanSystemAdmin@urbanex.example</div>
             </div>
             <div className="rounded-xl border border-white/15 bg-black/30 p-4">
               <div className="text-xs uppercase tracking-wide text-white/90">Phone</div>
@@ -39,8 +39,8 @@ export default function Contact() {
 
         <footer className="border-t border-white/10 bg-black/40 backdrop-blur-sm">
           <div className="flex flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-slate-300 md:flex-row lg:px-0">
-            <span>© 2025 CREOS. All rights reserved.</span>
-            <span className="text-slate-400">Design and development: CREOS Team</span>
+            <span>© 2025 Urbanex. All rights reserved.</span>
+            <span className="text-slate-400">Design and development: Urbanex Team</span>
           </div>
         </footer>
       </main>

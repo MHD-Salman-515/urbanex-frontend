@@ -6,7 +6,7 @@ export default function Intro() {
 
   const handleContinue = () => {
     try {
-      localStorage.setItem("creos_intro_seen", "true");
+      localStorage.setItem("urbanex_intro_seen", "true");
     } catch {
       // ignore storage write errors
     }

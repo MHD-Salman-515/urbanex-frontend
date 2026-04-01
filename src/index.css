@@ -23,14 +23,14 @@
   --input: 0 0% 20%;
   --ring: 0 0% 100%;
 
-  --creos-bg: #000000;
-  --creos-surface: #000000;
-  --creos-text: #ffffff;
-  --creos-muted: #b3b3b3;
-  --creos-accent: #ffffff;
-  --creos-surface-rgb: 0 0 0;
-  --creos-accent-rgb: 255 255 255;
-  --creos-text-rgb: 255 255 255;
+  --urbanex-bg: #000000;
+  --urbanex-surface: #000000;
+  --urbanex-text: #ffffff;
+  --urbanex-muted: #b3b3b3;
+  --urbanex-accent: #ffffff;
+  --urbanex-surface-rgb: 0 0 0;
+  --urbanex-accent-rgb: 255 255 255;
+  --urbanex-text-rgb: 255 255 255;
 }
 
 html,

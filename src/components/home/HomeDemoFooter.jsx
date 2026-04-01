@@ -25,7 +25,7 @@ export default function HomeDemoFooter() {
             )
           )}
         </div>
-        <p className="text-xs">CREOS / UrbanX</p>
+        <p className="text-xs">Urbanex</p>
       </div>
     </footer>
   );

@@ -108,7 +108,7 @@ export default function Home() {
   };
 
   return (
-    <div className="creos-theme relative flex min-h-screen flex-col overflow-hidden bg-[var(--creos-bg)] text-[var(--creos-text)]">
+    <div className="urbanex-theme relative flex min-h-screen flex-col overflow-hidden bg-[var(--urbanex-bg)] text-[var(--urbanex-text)]">
       <main className="relative z-10 flex-1 space-y-10 pb-12">
         <HeroShowcase
           quick={quick}
@@ -148,7 +148,7 @@ export default function Home() {
             </article>
             <article className="rounded-2xl border border-white/15 bg-black/40 p-5 backdrop-blur-xl">
               <div className="text-[11px] uppercase tracking-wide text-white/90">Operations Ready</div>
-              <h3 className="mt-2 text-lg font-semibold">CREOS Central Control</h3>
+              <h3 className="mt-2 text-lg font-semibold">Urbanex Central Control</h3>
               <p className="mt-2 text-sm text-slate-300">Manage property discovery, requests, and communication in one place.</p>
             </article>
           </div>
@@ -156,7 +156,7 @@ export default function Home() {
 
         <section className="mx-auto w-full max-w-6xl px-4 lg:px-0">
           <div className="rounded-3xl border border-white/15 bg-gradient-to-r from-black/70 via-white/10 to-black/70 p-6 shadow-xl shadow-white/10 backdrop-blur-xl md:p-8">
-            <h2 className="text-2xl font-bold md:text-3xl">Explore the full CREOS experience</h2>
+            <h2 className="text-2xl font-bold md:text-3xl">Explore the full Urbanex experience</h2>
             <p className="mt-3 max-w-2xl text-sm text-slate-300 md:text-base">
               Browse curated properties, review services, learn about our workflow, and contact the team from dedicated pages.
             </p>

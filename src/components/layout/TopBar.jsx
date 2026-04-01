@@ -127,10 +127,10 @@ export default function TopBar() {
         <Link
           to="/"
           className="inline-flex items-center gap-2 rounded-xl px-2 py-1.5 text-white/90 transition hover:bg-white/5 hover:text-white"
-          aria-label="CREOS home"
+          aria-label="Urbanex home"
         >
           <Building2 className="h-5 w-5" />
-          <span className="text-sm font-semibold tracking-[0.2em]">CREOS</span>
+          <span className="text-sm font-semibold tracking-[0.2em]">Urbanex</span>
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">

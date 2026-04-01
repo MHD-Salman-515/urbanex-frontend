@@ -94,7 +94,7 @@ export default function PublicLayout() {
   };
 
   return (
-    <div className="creos-theme relative min-h-screen overflow-x-hidden bg-[var(--creos-bg)] text-[var(--creos-text)]">
+    <div className="urbanex-theme relative min-h-screen overflow-x-hidden bg-[var(--urbanex-bg)] text-[var(--urbanex-text)]">
       {isAuthPage && (
         <div className="pointer-events-none absolute inset-0 -z-20 overflow-hidden">
           <div
@@ -124,10 +124,10 @@ export default function PublicLayout() {
                 className="min-w-0 rounded-lg px-1 py-1 text-left leading-tight focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-black/40"
                 aria-haspopup="menu"
                 aria-expanded={brandMenuOpen}
-                aria-controls="creos-menu"
-                id="creos-menu-button"
+                aria-controls="urbanex-menu"
+                id="urbanex-menu-button"
               >
-                <span className="block text-base font-semibold tracking-[0.18em] text-white">CREOS</span>
+                <span className="block text-base font-semibold tracking-[0.18em] text-white">Urbanex</span>
                 <span className="hidden text-[10px] text-slate-300/90 sm:block">
                   Centralized Real Estate Operations System
                 </span>
@@ -135,9 +135,9 @@ export default function PublicLayout() {
 
               {brandMenuOpen ? (
                 <div
-                  id="creos-menu"
+                  id="urbanex-menu"
                   role="menu"
-                  aria-labelledby="creos-menu-button"
+                  aria-labelledby="urbanex-menu-button"
                   className="absolute left-0 top-full z-[80] mt-2 w-64 rounded-2xl border border-white/10 bg-[#050912]/95 p-2 backdrop-blur-xl"
                 >
                   <div className="border-b border-white/10 px-3 py-2">

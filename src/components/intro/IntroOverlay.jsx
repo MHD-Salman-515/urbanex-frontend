@@ -54,7 +54,7 @@ export default function IntroOverlay({ open = false, onEnter, onClose }) {
         ) : (
           <img
             src="/images/hero-2.jpg"
-            alt="CREOS intro background"
+            alt="Urbanex intro background"
             className="h-full w-full object-cover"
           />
         )}
@@ -71,12 +71,12 @@ export default function IntroOverlay({ open = false, onEnter, onClose }) {
         <div className="mx-auto flex w-fit items-center gap-3 rounded-full border border-white/15 bg-black/35 px-4 py-2">
           <Logo className="text-white/90" size={24} />
           <span className="text-sm font-semibold tracking-[0.2em] text-white">
-            CREOS
+            Urbanex
           </span>
         </div>
 
         <h1 className="mt-6 text-3xl font-black text-white sm:text-4xl">
-          Welcome To CREOS
+          Welcome To Urbanex
         </h1>
         <p className="mx-auto mt-3 max-w-xl text-sm text-slate-200 sm:text-base">
           Centralized Real Estate Operations System
@@ -88,7 +88,7 @@ export default function IntroOverlay({ open = false, onEnter, onClose }) {
             onClick={enterIntro}
             className="inline-flex min-w-40 items-center justify-center rounded-xl bg-white/10 px-6 py-3 text-sm font-semibold text-black transition hover:bg-white/10"
           >
-            Enter CREOS
+            Enter Urbanex
           </button>
           <button
             type="button"

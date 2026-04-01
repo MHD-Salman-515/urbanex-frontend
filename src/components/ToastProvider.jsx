@@ -11,7 +11,7 @@ import {
 import { useAuth } from "../context/AuthContext.jsx";
 
 const ToastCtx = createContext(null);
-const LS_PREFIX = "creos_notifications_";
+const LS_PREFIX = "urbanex_notifications_";
 
 function buildStorageKey(user) {
   const identity = user?.id ?? user?.email ?? user?.username;

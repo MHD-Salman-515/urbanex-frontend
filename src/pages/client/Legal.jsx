@@ -1,6 +1,6 @@
 export default function Legal() {
   return (
-    <div className="creos-theme relative min-h-screen overflow-hidden bg-[var(--creos-bg)] text-[var(--creos-text)]">
+    <div className="urbanex-theme relative min-h-screen overflow-hidden bg-[var(--urbanex-bg)] text-[var(--urbanex-text)]">
 
       <main className="relative z-10 mx-auto w-full max-w-3xl space-y-6 px-4 pb-12 pt-12 lg:px-0">
         <section className="card-glass rounded-3xl border border-white/10 bg-black/40 p-6 backdrop-blur-xl md:p-8">

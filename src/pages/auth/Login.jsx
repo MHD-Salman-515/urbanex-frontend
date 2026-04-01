@@ -87,7 +87,7 @@ export default function Login() {
   return (
     <AuthComponent
       mode="login"
-      brandName="CREOS"
+      brandName="Urbanex"
       defaultEmail={form.email}
       defaultRemember={form.remember}
       onEmailChange={(email) => setForm((f) => ({ ...f, email }))}

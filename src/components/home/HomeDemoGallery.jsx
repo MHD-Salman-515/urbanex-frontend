@@ -78,7 +78,7 @@ export default function HomeDemoGallery() {
     <div className="bg-background min-h-[600px] text-foreground overflow-hidden rounded-lg border w-full">
       <div className="h-[300px] flex flex-col items-center justify-center px-4 text-center">
         <Badge variant="outline" className="mb-4 border-white/15 bg-white/10 text-[10px] tracking-[0.22em] uppercase">
-          CREOS
+          Urbanex
         </Badge>
         <h2 className="text-3xl font-bold tracking-tight md:text-5xl">Featured Properties</h2>
         <p className="mt-4 animate-bounce text-xs uppercase tracking-[0.25em] text-muted-foreground">↓ Scroll</p>
