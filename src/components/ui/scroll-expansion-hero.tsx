@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useRef, useState } from "react";
-import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 
 type ScrollExpandMediaProps = {
   mediaType?: "image" | "video";
@@ -27,34 +27,53 @@ export default function ScrollExpandMedia({
   const [mediaFullyExpanded, setMediaFullyExpanded] = useState(false);
   const [showContent, setShowContent] = useState(false);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
+  useEffect(() => {
+    if (!mediaFullyExpanded) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
 
-  const mediaScale = useTransform(scrollYProgress, [0, 0.45], [0.66, 1]);
-  const mediaY = useTransform(scrollYProgress, [0, 0.45], [70, 0]);
-  const mediaRadius = useTransform(scrollYProgress, [0, 0.45], [24, 8]);
-  const headerY = useTransform(scrollYProgress, [0, 0.25], [0, -36]);
-  const headerOpacity = useTransform(scrollYProgress, [0, 0.24], [1, 0.5]);
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [mediaFullyExpanded]);
 
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const next = Number(latest || 0);
-    setScrollProgress(next);
-    const expanded = next >= 0.45;
-    setMediaFullyExpanded(expanded);
-    setShowContent(next >= 0.48);
-  });
+  const handleWheel = (e: WheelEvent) => {
+    if (mediaFullyExpanded) return;
+
+    e.preventDefault();
+
+    const delta = e.deltaY * 0.001;
+
+    const newProgress = Math.min(Math.max(scrollProgress + delta, 0), 1);
+
+    setScrollProgress(newProgress);
+    console.log("progress:", newProgress);
+
+    if (newProgress >= 1) {
+      setMediaFullyExpanded(true);
+      setShowContent(true);
+    } else {
+      setMediaFullyExpanded(false);
+      setShowContent(false);
+    }
+  };
 
   useEffect(() => {
-    if (!mediaFullyExpanded && scrollProgress < 0.02) {
-      window.scrollTo(0, 0);
-    }
-  }, [mediaFullyExpanded, scrollProgress]);
+    window.addEventListener("wheel", handleWheel, { passive: false });
 
-  const frameSizeClass = mediaFullyExpanded
-    ? "h-screen w-screen"
-    : "h-[46vh] w-[90vw] sm:h-[56vh] sm:w-[78vw] lg:h-[62vh] lg:w-[72vw]";
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+    };
+  }, [scrollProgress, mediaFullyExpanded]);
+
+  const mediaWidth = mediaFullyExpanded ? "100vw" : `${300 + scrollProgress * 1000}px`;
+  const mediaHeight = mediaFullyExpanded ? "100vh" : `${400 + scrollProgress * 400}px`;
+  const mediaRadius = mediaFullyExpanded ? 0 : Math.max(24 - scrollProgress * 20, 0);
+  const mediaY = mediaFullyExpanded ? 0 : 70 - scrollProgress * 70;
+  const headerY = -(Math.min(scrollProgress * 4, 1) * 36);
+  const headerOpacity = showContent ? 0 : Math.max(1 - scrollProgress * 2, 0.5);
 
   return (
     <section ref={containerRef} className="relative h-[220vh] bg-black text-white">
@@ -73,7 +92,7 @@ export default function ScrollExpandMedia({
 
         <motion.div
           className="absolute top-8 left-0 right-0 z-20 px-4 text-center sm:top-10"
-          style={{ y: headerY, opacity: showContent ? 0 : headerOpacity }}
+          style={{ y: headerY, opacity: headerOpacity }}
         >
           {date ? (
             <p className="mb-2 text-xs uppercase tracking-[0.35em] text-white/80 sm:text-sm">
@@ -95,8 +114,8 @@ export default function ScrollExpandMedia({
 
         <div className="absolute inset-0 z-10 flex items-center justify-center px-4">
           <motion.div
-            className={frameSizeClass}
-            style={{ scale: mediaScale, y: mediaY }}
+            className="max-w-none"
+            style={{ width: mediaWidth, height: mediaHeight, y: mediaY }}
           >
             <motion.div
               className="h-full w-full overflow-hidden border border-white/15 bg-black/30 shadow-[0_30px_120px_rgba(0,0,0,0.55)] backdrop-blur-[2px]"
