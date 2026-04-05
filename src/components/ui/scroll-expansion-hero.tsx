@@ -40,23 +40,27 @@ export default function ScrollExpandMedia({
   }, [mediaFullyExpanded]);
 
   const handleWheel = (e: WheelEvent) => {
-    if (mediaFullyExpanded) return;
+    if (mediaFullyExpanded && e.deltaY > 0) {
+      return;
+    }
 
     e.preventDefault();
 
-    const delta = e.deltaY * 0.001;
+    const delta = e.deltaY * 0.0015;
 
-    const newProgress = Math.min(Math.max(scrollProgress + delta, 0), 1);
+    const next = Math.min(Math.max(scrollProgress + delta, 0), 1);
 
-    setScrollProgress(newProgress);
-    console.log("progress:", newProgress);
+    setScrollProgress(next);
+    console.log("progress:", next);
 
-    if (newProgress >= 1) {
+    if (next >= 1) {
       setMediaFullyExpanded(true);
       setShowContent(true);
-    } else {
+    } else if (next <= 0) {
       setMediaFullyExpanded(false);
       setShowContent(false);
+    } else {
+      setMediaFullyExpanded(false);
     }
   };
 
@@ -68,15 +72,15 @@ export default function ScrollExpandMedia({
     };
   }, [scrollProgress, mediaFullyExpanded]);
 
-  const mediaWidth = mediaFullyExpanded ? "100vw" : `${300 + scrollProgress * 1000}px`;
-  const mediaHeight = mediaFullyExpanded ? "100vh" : `${400 + scrollProgress * 400}px`;
+  const mediaWidth = `${300 + scrollProgress * 1000}px`;
+  const mediaHeight = `${400 + scrollProgress * 500}px`;
   const mediaRadius = mediaFullyExpanded ? 0 : Math.max(24 - scrollProgress * 20, 0);
   const mediaY = mediaFullyExpanded ? 0 : 70 - scrollProgress * 70;
   const headerY = -(Math.min(scrollProgress * 4, 1) * 36);
   const headerOpacity = showContent ? 0 : Math.max(1 - scrollProgress * 2, 0.5);
 
   return (
-    <section ref={containerRef} className="relative h-[220vh] bg-black text-white">
+    <section ref={containerRef} className="relative h-[220vh] bg-[#0B0F19] text-white/90">
       <div className="sticky top-0 h-screen overflow-hidden">
         <img
           src={bgImageSrc}
@@ -103,8 +107,8 @@ export default function ScrollExpandMedia({
             <h1
               className={
                 textBlend
-                  ? "mx-auto max-w-5xl text-3xl font-semibold leading-tight text-white mix-blend-screen sm:text-5xl lg:text-6xl"
-                  : "mx-auto max-w-5xl text-3xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl"
+                  ? "mx-auto max-w-5xl text-3xl font-semibold leading-tight text-white/90 mix-blend-screen sm:text-5xl lg:text-6xl"
+                  : "mx-auto max-w-5xl text-3xl font-semibold leading-tight text-white/90 sm:text-5xl lg:text-6xl"
               }
             >
               {title}
@@ -118,13 +122,13 @@ export default function ScrollExpandMedia({
             style={{ width: mediaWidth, height: mediaHeight, y: mediaY }}
           >
             <motion.div
-              className="h-full w-full overflow-hidden border border-white/15 bg-black/30 shadow-[0_30px_120px_rgba(0,0,0,0.55)] backdrop-blur-[2px]"
+              className="h-full w-full overflow-hidden border border-white/15 bg-white/5 shadow-[0_30px_120px_rgba(0,0,0,0.55)] backdrop-blur-[2px]"
               style={{ borderRadius: mediaRadius }}
             >
               {mediaType === "video" ? (
                 <video
                   src={mediaSrc}
-                  className="w-full h-full object-cover rounded-xl"
+                  className="h-full w-full rounded-xl object-cover"
                   autoPlay
                   muted
                   loop
@@ -134,7 +138,7 @@ export default function ScrollExpandMedia({
                 <img
                   src={mediaSrc}
                   alt={title || "Media"}
-                  className="w-full h-full object-cover rounded-xl"
+                  className="h-full w-full rounded-xl object-cover"
                 />
               )}
             </motion.div>
@@ -153,9 +157,9 @@ export default function ScrollExpandMedia({
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-white"
+            className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-white/90"
           >
-            <div className="mx-auto w-full max-w-5xl rounded-2xl border border-white/15 bg-black/35 p-6 backdrop-blur-md sm:p-8">
+            <div className="mx-auto w-full max-w-5xl rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur-md sm:p-8">
               {children}
             </div>
           </motion.div>

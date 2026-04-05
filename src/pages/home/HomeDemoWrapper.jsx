@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import HomeDemoFooter from "../../components/home/HomeDemoFooter.jsx";
 import ScrollExpandMedia from "@/components/ui/scroll-expansion-hero";
 import { getFeaturedProperty } from "@/api/heroApi";
-import { api, resolveApiAssetUrl } from "@/api/axios";
+import { api } from "@/api/axios";
 
 const cityImages = {
   Damascus: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
@@ -117,29 +117,29 @@ export default function HomeDemoWrapper() {
 
   if (loadingHero) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-black text-white">
+      <div className="flex h-screen w-full items-center justify-center bg-[#0B0F19] text-white/90">
         <div className="animate-pulse text-xl tracking-wide">Loading premium property...</div>
       </div>
     );
   }
 
-  const getPropertyImage = (p) =>
-    resolveApiAssetUrl(
+  const getImage = (p) => {
+    return (
       p?.image_url ||
-        p?.image ||
-        p?.thumbnail ||
-        p?.images?.[0] ||
-        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
+      p?.image ||
+      p?.thumbnail ||
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
     );
+  };
   const getPropertyPrice = (p) => p?.price_usd ?? p?.price ?? p?.price_syp ?? "—";
 
   return (
     <div
-      className={`min-h-screen overflow-x-hidden bg-black text-white transition-opacity duration-700 ${
+      className={`min-h-screen overflow-x-hidden bg-[#0B0F19] text-white/90 transition-opacity duration-700 ${
         loadingHero ? "opacity-50 blur-sm" : "opacity-100"
       }`}
     >
-      <div className="urbanex-theme relative min-h-screen bg-black w-full">
+      <div className="urbanex-theme relative min-h-screen w-full bg-[#0B0F19]">
         <main className="relative z-10 w-full">
           <section className="relative w-full">
             <div className="absolute top-24 left-4 z-50 flex gap-2">
@@ -147,10 +147,10 @@ export default function HomeDemoWrapper() {
                 <button
                   key={city}
                   onClick={() => setHeroData((prev) => ({ ...prev, city }))}
-                  className={`rounded px-3 py-1 text-sm text-white transition ${
-                    heroData.city === city ? "bg-white/35" : "bg-white/20 hover:bg-white/30"
-                  }`}
-                >
+                    className={`rounded px-3 py-1 text-sm text-white/90 transition ${
+                      heroData.city === city ? "bg-white/35" : "bg-white/20 hover:bg-white/30"
+                    }`}
+                  >
                   {city}
                 </button>
               ))}
@@ -175,9 +175,9 @@ export default function HomeDemoWrapper() {
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-6">
-                  <button className="rounded bg-white/20 px-4 py-2">Properties</button>
-                  <button className="rounded bg-white/20 px-4 py-2">Services</button>
-                  <button className="rounded bg-white/20 px-4 py-2">Contact</button>
+                  <button className="rounded bg-white/20 px-4 py-2 text-white/90">Properties</button>
+                  <button className="rounded bg-white/20 px-4 py-2 text-white/90">Services</button>
+                  <button className="rounded bg-white/20 px-4 py-2 text-white/90">Contact</button>
                 </div>
 
                 <p className="text-white/80">
@@ -197,23 +197,26 @@ export default function HomeDemoWrapper() {
             </ScrollExpandMedia>
           </section>
 
-          <section className="bg-gradient-to-b from-black to-gray-900 py-20 text-center text-white">
+          <section className="bg-[#0B0F19] py-24 text-center text-white/90">
             <div className="mx-auto max-w-4xl space-y-6 px-4">
-              <h2 className="text-4xl font-bold">منصة Urbanex العقارية</h2>
+              <h2 className="text-4xl font-bold tracking-wide">
+                Urbanex — رؤية جديدة للسوق العقاري
+              </h2>
 
               <p className="text-lg leading-relaxed text-white/80">
-                Urbanex هي منصة عقارية ذكية تعتمد على الذكاء الاصطناعي لتحليل السوق العقاري
-                وتقديم أفضل الفرص الاستثمارية بناءً على البيانات الحقيقية.
+                ليست مجرد منصة عقارية، بل نظام تحليلي متكامل يعيد تعريف طريقة فهم السوق.
+                Urbanex تجمع بين البيانات، التحليل، والتجربة البصرية لتقديم نظرة دقيقة
+                وواضحة عن قيمة العقار وموقعه ضمن حركة السوق.
               </p>
 
-              <p className="text-lg text-white/70">
-                نساعدك على اتخاذ قرارات دقيقة من خلال تحليل الأسعار، مقارنة المناطق، وتقديم
-                توصيات ذكية تناسب احتياجاتك.
+              <p className="text-lg text-white/60">
+                كل قرار هنا مبني على منطق، كل توصية مدعومة ببيانات،
+                وكل واجهة مصممة لتمنحك تجربة احترافية تليق برؤيتك.
               </p>
             </div>
           </section>
 
-          <section className="bg-black py-20 text-white">
+          <section className="bg-[#0B0F19] py-20 text-white/90">
             <div className="mx-auto max-w-6xl px-4">
               <h2 className="mb-10 text-center text-3xl font-bold">أبرز العقارات</h2>
 
@@ -221,18 +224,18 @@ export default function HomeDemoWrapper() {
                 {properties.slice(0, 3).map((p) => (
                   <div
                     key={p.id}
-                    className="overflow-hidden rounded-xl bg-white/5 backdrop-blur transition hover:scale-105"
+                    className="group overflow-hidden rounded-xl bg-white/5 backdrop-blur transition duration-500 hover:scale-105"
                   >
                     <img
-                      src={getPropertyImage(p)}
+                      src={getImage(p)}
                       alt={p.title || "Property"}
-                      className="h-48 w-full object-cover"
+                      className="h-48 w-full object-cover transition duration-500 group-hover:brightness-110"
                     />
 
                     <div className="space-y-2 p-4">
                       <h3 className="font-bold">{p.title || "Property"}</h3>
                       <p className="text-sm text-white/70">{p.city || "Damascus"}</p>
-                      <p className="font-bold text-green-400">${getPropertyPrice(p)}</p>
+                      <p className="font-bold text-[#00E5A8]">${getPropertyPrice(p)}</p>
                     </div>
                   </div>
                 ))}
@@ -248,12 +251,12 @@ export default function HomeDemoWrapper() {
                 {properties.map((p) => (
                   <div
                     key={p.id}
-                    className="rounded-xl bg-white shadow transition hover:shadow-lg"
+                    className="group rounded-xl bg-white shadow transition duration-500 hover:scale-105 hover:shadow-lg"
                   >
                     <img
-                      src={getPropertyImage(p)}
+                      src={getImage(p)}
                       alt={p.title || "Property"}
-                      className="h-48 w-full object-cover"
+                      className="h-48 w-full object-cover transition duration-500 group-hover:brightness-110"
                     />
 
                     <div className="space-y-2 p-4">
