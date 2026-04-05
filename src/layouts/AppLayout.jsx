@@ -6,7 +6,7 @@ export default function AppLayout() {
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
       <TopBar />
-      <main className="min-h-[calc(100vh-64px)]">
+      <main className="min-h-[calc(100vh-64px)] pt-16">
         <Outlet />
       </main>
     </div>

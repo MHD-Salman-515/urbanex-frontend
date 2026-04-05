@@ -1,5 +1,5 @@
-import { type ReactNode, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { type ReactNode, useEffect, useRef, useState } from "react";
+import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 
 type ScrollExpandMediaProps = {
   mediaType?: "image" | "video";
@@ -23,20 +23,38 @@ export default function ScrollExpandMedia({
   children,
 }: ScrollExpandMediaProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [mediaFullyExpanded, setMediaFullyExpanded] = useState(false);
+  const [showContent, setShowContent] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  const mediaScale = useTransform(scrollYProgress, [0, 0.45], [0.68, 1]);
+  const mediaScale = useTransform(scrollYProgress, [0, 0.45], [0.66, 1]);
   const mediaY = useTransform(scrollYProgress, [0, 0.45], [70, 0]);
-  const mediaRadius = useTransform(scrollYProgress, [0, 0.45], [24, 0]);
-  const overlayOpacity = useTransform(scrollYProgress, [0, 0.4, 1], [0.5, 0.28, 0.2]);
+  const mediaRadius = useTransform(scrollYProgress, [0, 0.45], [24, 8]);
   const headerY = useTransform(scrollYProgress, [0, 0.25], [0, -36]);
-  const headerOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.6]);
-  const contentOpacity = useTransform(scrollYProgress, [0.35, 0.55], [0, 1]);
-  const contentY = useTransform(scrollYProgress, [0.35, 0.6], [40, 0]);
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.24], [1, 0.5]);
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    const next = Number(latest || 0);
+    setScrollProgress(next);
+    const expanded = next >= 0.45;
+    setMediaFullyExpanded(expanded);
+    setShowContent(next >= 0.48);
+  });
+
+  useEffect(() => {
+    if (!mediaFullyExpanded && scrollProgress < 0.02) {
+      window.scrollTo(0, 0);
+    }
+  }, [mediaFullyExpanded, scrollProgress]);
+
+  const frameSizeClass = mediaFullyExpanded
+    ? "h-screen w-screen"
+    : "h-[46vh] w-[90vw] sm:h-[56vh] sm:w-[78vw] lg:h-[62vh] lg:w-[72vw]";
 
   return (
     <section ref={containerRef} className="relative h-[220vh] bg-black text-white">
@@ -48,13 +66,14 @@ export default function ScrollExpandMedia({
         />
 
         <motion.div
-          className="absolute inset-0 bg-black"
-          style={{ opacity: overlayOpacity }}
+          className="absolute inset-0 bg-black/40"
+          initial={{ opacity: 0.6 }}
+          animate={{ opacity: mediaFullyExpanded ? 0.7 : 0.4 }}
         />
 
         <motion.div
           className="absolute top-8 left-0 right-0 z-20 px-4 text-center sm:top-10"
-          style={{ y: headerY, opacity: headerOpacity }}
+          style={{ y: headerY, opacity: showContent ? 0 : headerOpacity }}
         >
           {date ? (
             <p className="mb-2 text-xs uppercase tracking-[0.35em] text-white/80 sm:text-sm">
@@ -76,7 +95,7 @@ export default function ScrollExpandMedia({
 
         <div className="absolute inset-0 z-10 flex items-center justify-center px-4">
           <motion.div
-            className="h-[46vh] w-[90vw] sm:h-[56vh] sm:w-[78vw] lg:h-[62vh] lg:w-[72vw]"
+            className={frameSizeClass}
             style={{ scale: mediaScale, y: mediaY }}
           >
             <motion.div
@@ -105,20 +124,24 @@ export default function ScrollExpandMedia({
 
         <motion.p
           className="absolute bottom-8 left-0 right-0 z-20 px-4 text-center text-xs tracking-[0.3em] text-white/80 sm:text-sm"
-          style={{ opacity: headerOpacity }}
+          style={{ opacity: showContent ? 0 : headerOpacity }}
         >
           {scrollToExpand}
         </motion.p>
-      </div>
 
-      <motion.div
-        className="pointer-events-none absolute inset-x-0 bottom-20 z-30 px-4 sm:bottom-24"
-        style={{ opacity: contentOpacity, y: contentY }}
-      >
-        <div className="pointer-events-auto mx-auto max-w-5xl rounded-2xl border border-white/15 bg-black/35 p-6 backdrop-blur-md sm:p-8">
-          {children}
-        </div>
-      </motion.div>
+        {showContent && (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-white"
+          >
+            <div className="mx-auto w-full max-w-5xl rounded-2xl border border-white/15 bg-black/35 p-6 backdrop-blur-md sm:p-8">
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </div>
     </section>
   );
 }

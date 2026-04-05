@@ -119,7 +119,7 @@ export default function TopBar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 h-16 w-full transition-all duration-300 ${
+      className={`fixed top-0 z-50 h-16 w-full transition-all duration-300 ${
         scrolled ? "bg-black/35 backdrop-blur-xl" : "bg-transparent"
       }`}
     >

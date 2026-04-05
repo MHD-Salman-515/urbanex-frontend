@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import HomeDemoFooter from "../../components/home/HomeDemoFooter.jsx";
 import HomeRadialProperties from "../../components/home/HomeRadialProperties";
 import ScrollExpandMedia from "@/components/ui/scroll-expansion-hero";
-import ExplainTraceCard from "@/components/ui/ExplainTraceCard";
 import { getFeaturedProperty } from "@/api/heroApi";
 
 const cityImages = {
@@ -132,17 +130,34 @@ export default function HomeDemoWrapper() {
               scrollToExpand="Scroll to Explore"
               textBlend
             >
-              <div className="mx-auto max-w-xl text-center text-white">
-                <p className="mb-6 text-base text-white/85">
-                  {heroData.description || "Discover premium properties with smart Urbanex insights."}
+              <div className="mx-auto max-w-4xl space-y-10 text-center">
+                <div>
+                  <h2 className="mb-4 text-3xl font-bold">Quick Search</h2>
+                  <input
+                    placeholder="Search properties..."
+                    className="w-72 rounded-lg px-4 py-2 text-black"
+                  />
+                </div>
+
+                <div className="flex flex-wrap justify-center gap-6">
+                  <button className="rounded bg-white/20 px-4 py-2">Properties</button>
+                  <button className="rounded bg-white/20 px-4 py-2">Services</button>
+                  <button className="rounded bg-white/20 px-4 py-2">Contact</button>
+                </div>
+
+                <p className="text-white/80">
+                  Urbanex is an AI-powered real estate platform that helps you explore, analyze,
+                  and invest in premium properties.
                 </p>
-                <ExplainTraceCard explain={heroData.explain} />
-                <Link
-                  to="/properties"
-                  className="mt-5 inline-flex rounded-xl border border-white/25 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/20"
+
+                <button
+                  onClick={() =>
+                    window.scrollTo({ top: window.innerHeight * 1.2, behavior: "smooth" })
+                  }
+                  className="rounded-lg bg-white px-6 py-2 text-black"
                 >
-                  View Property
-                </Link>
+                  Explore Properties
+                </button>
               </div>
             </ScrollExpandMedia>
           </section>
