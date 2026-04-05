@@ -20,8 +20,8 @@ If you are developing a production application, we recommend using TypeScript wi
 Set backend URL in `.env`:
 
 ```env
-VITE_API_BASE=http://localhost:3000
-VITE_API_URL=http://localhost:3000
+VITE_API_BASE=https://real-state-backend-yc23.onrender.com
+VITE_API_URL=https://real-state-backend-yc23.onrender.com
 ```
 
-If your backend runs on a different port (for example `3001`), update both values to that same origin.
+Update both values to the same backend origin when needed.

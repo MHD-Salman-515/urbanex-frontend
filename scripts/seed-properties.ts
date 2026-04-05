@@ -165,7 +165,7 @@ async function insertBatch(
 
 async function main() {
   const connection = await mysql.createConnection({
-    host: "localhost",
+    host: "real-state-backend-yc23.onrender.com",
     user: "root",
     password: "",
     database: "housing_db",

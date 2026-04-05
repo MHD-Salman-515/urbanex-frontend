@@ -18,7 +18,7 @@ const ROOM_LABELS_AR: Record<Room, string> = {
 };
 
 const DB_CONFIG = {
-  host: "localhost",
+  host: "real-state-backend-yc23.onrender.com",
   user: "root",
   password: "",
   database: "housing_db",

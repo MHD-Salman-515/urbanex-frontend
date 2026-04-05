@@ -5,13 +5,17 @@ function normalizeApiBase(input) {
   return value ? value.replace(/\/+$/, "") : "";
 }
 
-export const API_BASE = normalizeApiBase(
-  import.meta.env.VITE_API_BASE || import.meta.env.VITE_API_URL
-);
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://real-state-backend-yc23.onrender.com";
+
+export const API_BASE = normalizeApiBase(API_URL || import.meta.env.VITE_API_BASE);
 export const API_BASE_URL = API_BASE;
 export const AUTH_LOGIN_PATH = "/api/auth/login";
 export const AUTH_REGISTER_PATH = "/api/auth/register";
 export const AUTH_ME_PATH = "/api/auth/me";
+
+console.log("API BASE URL:", API_BASE);
 
 export const API_ORIGIN = (() => {
   try {
