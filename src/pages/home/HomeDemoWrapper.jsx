@@ -128,10 +128,9 @@ export default function HomeDemoWrapper() {
       p?.image_url ||
       p?.image ||
       p?.thumbnail ||
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
+      "https://images.unsplash.com/photo-1560185127-6ed189bf02f4"
     );
   };
-  const getPropertyPrice = (p) => p?.price_usd ?? p?.price ?? p?.price_syp ?? "—";
 
   return (
     <div
@@ -170,14 +169,14 @@ export default function HomeDemoWrapper() {
                   <h2 className="mb-4 text-3xl font-bold">Quick Search</h2>
                   <input
                     placeholder="Search properties..."
-                    className="w-72 rounded-lg px-4 py-2 text-black"
+                    className="w-72 rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-white"
                   />
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-6">
-                  <button className="rounded bg-white/20 px-4 py-2 text-white/90">Properties</button>
-                  <button className="rounded bg-white/20 px-4 py-2 text-white/90">Services</button>
-                  <button className="rounded bg-white/20 px-4 py-2 text-white/90">Contact</button>
+                  <button className="rounded bg-white/5 px-4 py-2 text-white">Properties</button>
+                  <button className="rounded bg-white/5 px-4 py-2 text-white">Services</button>
+                  <button className="rounded bg-white/5 px-4 py-2 text-white">Contact</button>
                 </div>
 
                 <p className="text-white/80">
@@ -189,7 +188,7 @@ export default function HomeDemoWrapper() {
                   onClick={() =>
                     window.scrollTo({ top: window.innerHeight * 1.2, behavior: "smooth" })
                   }
-                  className="rounded-lg bg-white px-6 py-2 text-black"
+                  className="rounded-lg bg-white/5 px-6 py-2 text-white"
                 >
                   Explore Properties
                 </button>
@@ -216,7 +215,7 @@ export default function HomeDemoWrapper() {
             </div>
           </section>
 
-          <section className="bg-[#0B0F19] py-20 text-white/90">
+          <section className="bg-[#0B0F19] py-20 text-white">
             <div className="mx-auto max-w-6xl px-4">
               <h2 className="mb-10 text-center text-3xl font-bold">أبرز العقارات</h2>
 
@@ -232,37 +231,10 @@ export default function HomeDemoWrapper() {
                       className="h-48 w-full object-cover transition duration-500 group-hover:brightness-110"
                     />
 
-                    <div className="space-y-2 p-4">
+                    <div className="p-4">
                       <h3 className="font-bold">{p.title || "Property"}</h3>
-                      <p className="text-sm text-white/70">{p.city || "Damascus"}</p>
-                      <p className="font-bold text-[#00E5A8]">${getPropertyPrice(p)}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          <section className="bg-gray-100 py-20">
-            <div className="mx-auto max-w-6xl px-4">
-              <h2 className="mb-10 text-center text-3xl font-bold text-black">جميع العقارات</h2>
-
-              <div className="grid gap-6 md:grid-cols-3">
-                {properties.map((p) => (
-                  <div
-                    key={p.id}
-                    className="group rounded-xl bg-white shadow transition duration-500 hover:scale-105 hover:shadow-lg"
-                  >
-                    <img
-                      src={getImage(p)}
-                      alt={p.title || "Property"}
-                      className="h-48 w-full object-cover transition duration-500 group-hover:brightness-110"
-                    />
-
-                    <div className="space-y-2 p-4">
-                      <h3 className="font-bold text-black">{p.title || "Property"}</h3>
-                      <p className="text-sm text-gray-600">{p.city || "Damascus"}</p>
-                      <p className="font-bold text-green-600">${getPropertyPrice(p)}</p>
+                      <p className="text-sm text-white/60">{p.city || "Damascus"}</p>
+                      <p className="font-bold text-[#00E5A8]">${p.price_usd ?? p.price ?? p.price_syp ?? "—"}</p>
                     </div>
                   </div>
                 ))}

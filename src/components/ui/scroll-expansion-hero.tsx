@@ -40,27 +40,24 @@ export default function ScrollExpandMedia({
   }, [mediaFullyExpanded]);
 
   const handleWheel = (e: WheelEvent) => {
-    if (mediaFullyExpanded && e.deltaY > 0) {
-      return;
-    }
+    const delta = e.deltaY;
 
-    e.preventDefault();
+    // 🚫 إذا لسا ما توسّع → نتحكم بالسكرول
+    if (!mediaFullyExpanded || delta < 0) {
+      e.preventDefault();
 
-    const delta = e.deltaY * 0.0015;
+      const next = Math.min(Math.max(scrollProgress + delta * 0.0015, 0), 1);
 
-    const next = Math.min(Math.max(scrollProgress + delta, 0), 1);
+      setScrollProgress(next);
+      console.log("progress:", next);
 
-    setScrollProgress(next);
-    console.log("progress:", next);
-
-    if (next >= 1) {
-      setMediaFullyExpanded(true);
-      setShowContent(true);
-    } else if (next <= 0) {
-      setMediaFullyExpanded(false);
-      setShowContent(false);
-    } else {
-      setMediaFullyExpanded(false);
+      if (next >= 1) {
+        setMediaFullyExpanded(true);
+        setShowContent(true);
+      } else {
+        setMediaFullyExpanded(false);
+        setShowContent(false);
+      }
     }
   };
 
