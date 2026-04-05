@@ -24,6 +24,7 @@ import WorkerLayout from "./layouts/WorkerLayout.jsx";
 import Intro from "./pages/client/Intro.jsx";
 import Home from "./pages/client/Home.jsx";
 import HomeDemoWrapper from "./pages/home/HomeDemoWrapper.jsx";
+import UrbanexHeroDemo from "./pages/UrbanexHeroDemo";
 import Search from "./pages/client/Search.jsx";
 import Properties from "./pages/client/Properties.jsx";
 import Services from "./pages/client/Services.jsx";
@@ -126,6 +127,7 @@ export default function App() {
                   <Route element={<PublicLayout />}>
                     <Route path="/" element={<HomeDemoWrapper />} />
                     <Route path="/home" element={<HomeDemoWrapper />} />
+                    <Route path="/hero" element={<UrbanexHeroDemo />} />
                     <Route path="/home-old" element={<Home />} />
                     <Route path="/intro" element={<Intro />} />
                     <Route path="/search" element={<Search />} />
