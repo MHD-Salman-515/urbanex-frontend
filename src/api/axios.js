@@ -95,9 +95,7 @@ api.interceptors.request.use((config) => {
 
 function persistAccessToken(token) {
   if (!token || typeof window === "undefined") return;
-  localStorage.setItem("auth_token_v1", token);
   localStorage.setItem("access_token", token);
-  localStorage.setItem("token", token);
 }
 
 function clearStoredTokens() {
