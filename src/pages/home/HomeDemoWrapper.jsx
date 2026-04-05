@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import HomeDemoFooter from "../../components/home/HomeDemoFooter.jsx";
 import ScrollExpandMedia from "@/components/ui/scroll-expansion-hero";
 import { getFeaturedProperty } from "@/api/heroApi";
@@ -35,6 +36,7 @@ const demoProperties = [
 ];
 
 export default function HomeDemoWrapper() {
+  const navigate = useNavigate();
   const [loadingHero, setLoadingHero] = useState(true);
   const [heroData, setHeroData] = useState({
     title: "Urbanex Real Estate",
@@ -128,7 +130,7 @@ export default function HomeDemoWrapper() {
     >
       <div className="urbanex-theme relative min-h-screen w-full bg-[#0B0F19]">
         <main className="relative z-10 w-full">
-          <section className="relative w-full">
+          <section className="relative min-h-screen w-full">
             <div className="absolute top-24 left-4 z-50 flex gap-2">
               {cities.map((city) => (
                 <button
@@ -157,17 +159,32 @@ export default function HomeDemoWrapper() {
                   <h2 className="mb-4 text-3xl font-bold">Quick Search</h2>
                   <input
                     placeholder="Search properties..."
-                    className="w-72 rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-white"
+                    className="w-full rounded-xl bg-white/10 p-4 text-white placeholder-white/50 outline-none"
                   />
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-6">
-                  <button className="rounded bg-white/5 px-4 py-2 text-white">Properties</button>
-                  <button className="rounded bg-white/5 px-4 py-2 text-white">Services</button>
-                  <button className="rounded bg-white/5 px-4 py-2 text-white">Contact</button>
+                  <button
+                    onClick={() => navigate("/properties")}
+                    className="rounded-xl bg-[#00E5A8] px-6 py-3 font-bold text-black transition hover:scale-105"
+                  >
+                    Properties
+                  </button>
+                  <button
+                    onClick={() => navigate("/services")}
+                    className="rounded-xl border border-white/30 px-6 py-3 text-white transition hover:bg-white/10"
+                  >
+                    Services
+                  </button>
+                  <button
+                    onClick={() => navigate("/contact")}
+                    className="rounded-xl border border-white/30 px-6 py-3 text-white transition hover:bg-white/10"
+                  >
+                    Contact
+                  </button>
                 </div>
 
-                <p className="text-white/80">
+                <p className="text-white drop-shadow-lg">
                   Urbanex is an AI-powered real estate platform that helps you explore, analyze,
                   and invest in premium properties.
                 </p>
@@ -176,7 +193,7 @@ export default function HomeDemoWrapper() {
                   onClick={() =>
                     window.scrollTo({ top: window.innerHeight * 1.2, behavior: "smooth" })
                   }
-                  className="rounded-lg bg-white/5 px-6 py-2 text-white"
+                  className="rounded-xl border border-white/30 px-6 py-3 text-white transition hover:bg-white/10"
                 >
                   Explore Properties
                 </button>
@@ -184,45 +201,54 @@ export default function HomeDemoWrapper() {
             </ScrollExpandMedia>
           </section>
 
-          <section className="bg-[#0B0F19] py-24 text-center text-white/90">
-            <div className="mx-auto max-w-4xl space-y-6 px-4">
-              <h2 className="text-4xl font-bold tracking-wide">
-                Urbanex — رؤية جديدة للسوق العقاري
-              </h2>
+          <section className="py-24 bg-[#0B0F19] text-white text-center">
+            <div className="max-w-5xl mx-auto space-y-6 px-4">
+              <h2 className="text-4xl font-bold">لماذا Urbanex؟</h2>
 
-              <p className="text-lg leading-relaxed text-white/80">
-                ليست مجرد منصة عقارية، بل نظام تحليلي متكامل يعيد تعريف طريقة فهم السوق.
-                Urbanex تجمع بين البيانات، التحليل، والتجربة البصرية لتقديم نظرة دقيقة
-                وواضحة عن قيمة العقار وموقعه ضمن حركة السوق.
+              <p className="text-lg text-white/80 leading-relaxed">
+                Urbanex تقدم تجربة عقارية متكاملة تجمع بين البساطة، التحليل، والوضوح.
+                من البحث إلى اتخاذ القرار، كل خطوة مصممة لتكون دقيقة وسهلة.
               </p>
 
-              <p className="text-lg text-white/60">
-                كل قرار هنا مبني على منطق، كل توصية مدعومة ببيانات،
-                وكل واجهة مصممة لتمنحك تجربة احترافية تليق برؤيتك.
-              </p>
+              <div className="grid md:grid-cols-3 gap-6 mt-10">
+                <div className="bg-white/5 p-6 rounded-xl backdrop-blur">
+                  <h3 className="text-xl font-bold text-[#00E5A8]">تحليل ذكي</h3>
+                  <p className="text-white/70 mt-2">فهم حقيقي للسوق</p>
+                </div>
+
+                <div className="bg-white/5 p-6 rounded-xl backdrop-blur">
+                  <h3 className="text-xl font-bold text-[#00E5A8]">واجهة سهلة</h3>
+                  <p className="text-white/70 mt-2">تجربة استخدام سلسة</p>
+                </div>
+
+                <div className="bg-white/5 p-6 rounded-xl backdrop-blur">
+                  <h3 className="text-xl font-bold text-[#00E5A8]">نتائج دقيقة</h3>
+                  <p className="text-white/70 mt-2">قرارات مبنية على بيانات</p>
+                </div>
+              </div>
             </div>
           </section>
 
-          <section className="bg-[#0B0F19] py-20 text-white">
-            <div className="mx-auto max-w-6xl px-4">
-              <h2 className="mb-10 text-center text-3xl font-bold">أبرز العقارات</h2>
+          <section className="py-20 bg-[#0B0F19] text-white">
+            <div className="max-w-6xl mx-auto px-4">
+              <h2 className="text-3xl font-bold mb-10 text-center">أبرز العقارات</h2>
 
-              <div className="grid gap-6 md:grid-cols-3">
+              <div className="grid md:grid-cols-3 gap-6">
                 {demoProperties.slice(0, 3).map((p) => (
                   <div
                     key={p.id}
-                    className="group overflow-hidden rounded-xl bg-white/5 backdrop-blur transition duration-500 hover:scale-105"
+                    className="group bg-white/5 backdrop-blur rounded-xl overflow-hidden hover:scale-105 transition duration-500"
                   >
                     <img
                       src={p.image}
                       alt={p.title}
-                      className="h-48 w-full object-cover transition duration-500 group-hover:brightness-110"
+                      className="w-full h-48 object-cover group-hover:brightness-110"
                     />
 
                     <div className="p-4">
                       <h3 className="font-bold">{p.title}</h3>
                       <p className="text-sm text-white/60">{p.city}</p>
-                      <p className="font-bold text-[#00E5A8]">${p.price_usd}</p>
+                      <p className="text-[#00E5A8] font-bold">${p.price_usd}</p>
                     </div>
                   </div>
                 ))}

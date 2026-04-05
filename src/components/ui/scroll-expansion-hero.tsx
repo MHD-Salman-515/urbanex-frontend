@@ -96,22 +96,23 @@ export default function ScrollExpandMedia({
   const headerOpacity = showContent ? 0 : Math.max(1 - scrollProgress * 2, 0.5);
 
   return (
-    <section ref={containerRef} className="relative h-[220vh] bg-[#0B0F19] text-white/90">
+    <section ref={containerRef} className="relative min-h-screen bg-[#0B0F19] text-white">
       <div className="sticky top-0 h-screen overflow-hidden">
         <img
           src={bgImageSrc}
           alt="Background"
           className="w-screen h-screen object-cover"
         />
+        <div className="absolute inset-0 z-10 bg-black/50" />
 
         <motion.div
-          className="absolute inset-0 bg-black/40"
+          className="absolute inset-0 z-10 bg-black/40"
           initial={{ opacity: 0.6 }}
           animate={{ opacity: mediaFullyExpanded ? 0.7 : 0.4 }}
         />
 
         <motion.div
-          className="absolute top-8 left-0 right-0 z-20 px-4 text-center sm:top-10"
+          className="absolute top-8 left-0 right-0 z-30 px-4 text-center sm:top-10"
           style={{ y: headerY, opacity: headerOpacity }}
         >
           {date ? (
@@ -123,8 +124,8 @@ export default function ScrollExpandMedia({
             <h1
               className={
                 textBlend
-                  ? "mx-auto max-w-5xl text-3xl font-semibold leading-tight text-white/90 mix-blend-screen sm:text-5xl lg:text-6xl"
-                  : "mx-auto max-w-5xl text-3xl font-semibold leading-tight text-white/90 sm:text-5xl lg:text-6xl"
+                  ? "mx-auto max-w-5xl text-3xl font-semibold leading-tight text-white drop-shadow-lg mix-blend-screen sm:text-5xl lg:text-6xl"
+                  : "mx-auto max-w-5xl text-3xl font-semibold leading-tight text-white drop-shadow-lg sm:text-5xl lg:text-6xl"
               }
             >
               {title}
@@ -132,7 +133,7 @@ export default function ScrollExpandMedia({
           ) : null}
         </motion.div>
 
-        <div className="absolute inset-0 z-10 flex items-center justify-center px-4">
+        <div className="absolute inset-0 z-20 flex items-center justify-center px-4">
           <motion.div
             className="max-w-none"
             style={{ width: mediaWidth, height: mediaHeight, y: mediaY }}
@@ -162,7 +163,7 @@ export default function ScrollExpandMedia({
         </div>
 
         <motion.p
-          className="absolute bottom-8 left-0 right-0 z-20 px-4 text-center text-xs tracking-[0.3em] text-white/80 sm:text-sm"
+          className="absolute bottom-8 left-0 right-0 z-30 px-4 text-center text-xs tracking-[0.3em] text-white/80 drop-shadow-lg sm:text-sm"
           style={{ opacity: showContent ? 0 : headerOpacity }}
         >
           {scrollToExpand}
@@ -173,7 +174,7 @@ export default function ScrollExpandMedia({
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-white/90"
+            className="absolute inset-0 z-30 flex flex-col items-center justify-center px-4 text-white"
           >
             <div className="mx-auto w-full max-w-5xl rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur-md sm:p-8">
               {children}
