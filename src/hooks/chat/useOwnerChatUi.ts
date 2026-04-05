@@ -35,6 +35,32 @@ function mapMessage(raw: any, sessionId?: string): ChatMessage {
   };
 }
 
+function toRecommendationPayload(candidate: any): { city?: string; title?: string } | null {
+  if (!candidate || typeof candidate !== "object") return null;
+  const intent = String(candidate.intent || candidate?.meta?.intent || "").toUpperCase();
+  if (intent !== "BUYER_RECOMMENDATION") return null;
+
+  const city =
+    candidate.city ||
+    candidate?.meta?.city ||
+    candidate?.recommendation?.city ||
+    candidate?.payload?.city;
+  const title =
+    candidate.title ||
+    candidate?.meta?.title ||
+    candidate?.recommendation?.title ||
+    candidate?.payload?.title;
+
+  if (!city && !title) return null;
+  return { city, title };
+}
+
+function emitHeroUpdate(detail: { city?: string; title?: string }) {
+  if (typeof window === "undefined") return;
+  if (!detail.city && !detail.title) return;
+  window.dispatchEvent(new CustomEvent("updateHero", { detail }));
+}
+
 export function useOwnerChatUi(initialSessionId?: string) {
   const backendOfflineError = "تعذر الاتصال بالخادم. تأكد من تشغيل الباك.";
   const [sessions, setSessions] = useState<ChatSession[]>([]);
@@ -131,6 +157,14 @@ export function useOwnerChatUi(initialSessionId?: string) {
       console.debug("[OwnerChat] CHAT_REQUEST_SUCCESS", { sessionId: sid });
       console.debug("[OwnerChat] CHAT_RESPONSE_SOURCE=backend_only", { sessionId: sid });
       const maybeMessages = asArray(data);
+      const recommendation =
+        toRecommendationPayload(data) ||
+        toRecommendationPayload(data?.data) ||
+        maybeMessages.map((item) => toRecommendationPayload(item)).find(Boolean) ||
+        maybeMessages.map((item) => toRecommendationPayload(item?.meta)).find(Boolean);
+      if (recommendation) {
+        emitHeroUpdate(recommendation);
+      }
       if (maybeMessages.length) {
         const parsed = maybeMessages.map((m) => mapMessage(m, sid)).filter((m) => m.content);
         setMessages((prev) => [...prev.filter((m) => m.id !== optimistic.id), ...parsed.filter((m) => m.role !== "user")]);
