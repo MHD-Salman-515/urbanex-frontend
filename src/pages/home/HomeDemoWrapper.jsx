@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import HomeDemoFooter from "../../components/home/HomeDemoFooter.jsx";
 import HomeRadialProperties from "../../components/home/HomeRadialProperties";
 import ScrollExpandMedia from "@/components/ui/scroll-expansion-hero";
+import ExplainTraceCard from "@/components/ui/ExplainTraceCard";
 import { getFeaturedProperty } from "@/api/heroApi";
 
 const cityImages = {
@@ -14,17 +15,20 @@ const cityImages = {
 const cities = ["Damascus", "Rif Damascus", "Aleppo"];
 
 export default function HomeDemoWrapper() {
+  const [loadingHero, setLoadingHero] = useState(true);
   const [heroData, setHeroData] = useState({
     title: "Urbanex Real Estate",
     city: "Damascus",
     image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
     background: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
     description: "",
+    explain: null,
   });
 
   useEffect(() => {
     const loadHero = async () => {
       try {
+        setLoadingHero(true);
         const property = await getFeaturedProperty();
         if (!property) return;
 
@@ -34,6 +38,18 @@ export default function HomeDemoWrapper() {
           property.thumbnail ||
           cityImages.Damascus;
         const nextCity = property.city || "Damascus";
+        const fallbackExplain = {
+          inputs: {
+            area: property.area_m2 ?? property.area ?? null,
+            price: property.price_usd ?? property.price ?? null,
+          },
+          confidence: 0.85,
+          steps: [
+            "Compared with market average",
+            "Matched similar properties",
+            "Adjusted for location demand",
+          ],
+        };
 
         setHeroData({
           title: property.title || "Luxury Property",
@@ -41,9 +57,12 @@ export default function HomeDemoWrapper() {
           image: media,
           background: media,
           description: property.description || "",
+          explain: property.explain_trace || fallbackExplain,
         });
       } catch (err) {
         console.error("Hero load failed", err);
+      } finally {
+        setTimeout(() => setLoadingHero(false), 500);
       }
     };
 
@@ -73,8 +92,20 @@ export default function HomeDemoWrapper() {
     return () => window.removeEventListener("updateHero", handler);
   }, []);
 
+  if (loadingHero) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-black text-white">
+        <div className="animate-pulse text-xl tracking-wide">Loading premium property...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden">
+    <div
+      className={`min-h-screen overflow-x-hidden bg-black text-white transition-opacity duration-700 ${
+        loadingHero ? "opacity-50 blur-sm" : "opacity-100"
+      }`}
+    >
       <div className="urbanex-theme relative min-h-screen bg-black w-full">
         <main className="relative z-10 w-full">
           <section className="relative w-full">
@@ -102,9 +133,10 @@ export default function HomeDemoWrapper() {
               textBlend
             >
               <div className="mx-auto max-w-xl text-center text-white">
-                <p className="text-base text-white/85">
+                <p className="mb-6 text-base text-white/85">
                   {heroData.description || "Discover premium properties with smart Urbanex insights."}
                 </p>
+                <ExplainTraceCard explain={heroData.explain} />
                 <Link
                   to="/properties"
                   className="mt-5 inline-flex rounded-xl border border-white/25 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/20"
