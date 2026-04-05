@@ -5,11 +5,10 @@ function normalizeApiBase(input) {
   return value ? value.replace(/\/+$/, "") : "";
 }
 
-const API_URL =
-  import.meta.env.VITE_API_URL ||
-  "https://real-state-backend-yc23.onrender.com";
+const API_URL = "https://real-state-backend-yc23.onrender.com";
+const REFRESH_URL = "https://real-state-backend-yc23.onrender.com/api/auth/refresh";
 
-export const API_BASE = normalizeApiBase(API_URL || import.meta.env.VITE_API_BASE);
+export const API_BASE = normalizeApiBase(API_URL);
 export const API_BASE_URL = API_BASE;
 export const AUTH_LOGIN_PATH = "/api/auth/login";
 export const AUTH_REGISTER_PATH = "/api/auth/register";
@@ -80,7 +79,7 @@ function formatErrorUrl(config) {
 }
 
 export const api = axios.create({
-  baseURL: API_BASE,
+  baseURL: "https://real-state-backend-yc23.onrender.com",
   withCredentials: true,
 });
 
@@ -122,8 +121,9 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
+        console.log("TRY REFRESH");
         const refreshResponse = await axios.post(
-          buildApiUrl("/api/auth/refresh"),
+          REFRESH_URL,
           {},
           { withCredentials: true },
         );
