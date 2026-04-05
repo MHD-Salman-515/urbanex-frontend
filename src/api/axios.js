@@ -81,7 +81,7 @@ function formatErrorUrl(config) {
 
 export const api = axios.create({
   baseURL: API_BASE,
-  withCredentials: false,
+  withCredentials: true,
 });
 
 api.interceptors.request.use((config) => {
@@ -94,9 +94,65 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+function persistAccessToken(token) {
+  if (!token || typeof window === "undefined") return;
+  localStorage.setItem("auth_token_v1", token);
+  localStorage.setItem("access_token", token);
+  localStorage.setItem("token", token);
+}
+
+function clearStoredTokens() {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem("auth_token_v1");
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("token");
+  sessionStorage.removeItem("auth_token_v1");
+  sessionStorage.removeItem("access_token");
+  sessionStorage.removeItem("token");
+}
+
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    const originalRequest = error?.config || {};
+    const requestUrl = String(originalRequest?.url || "");
+    const isRefreshCall = requestUrl.includes("/api/auth/refresh") || requestUrl.includes("/auth/refresh");
+
+    if (error?.response?.status === 401 && !originalRequest._retry && !isRefreshCall) {
+      originalRequest._retry = true;
+
+      try {
+        const refreshResponse = await axios.post(
+          buildApiUrl("/api/auth/refresh"),
+          {},
+          { withCredentials: true },
+        );
+
+        const newAccessToken =
+          refreshResponse?.data?.accessToken ||
+          refreshResponse?.data?.token ||
+          refreshResponse?.data?.data?.accessToken ||
+          "";
+
+        if (!newAccessToken) {
+          throw new Error("No access token returned from refresh endpoint.");
+        }
+
+        persistAccessToken(newAccessToken);
+        api.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
+        originalRequest.headers = originalRequest.headers || {};
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+        return api(originalRequest);
+      } catch (refreshError) {
+        clearStoredTokens();
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
+        }
+        return Promise.reject(refreshError);
+      }
+    }
+
     const status = error?.response?.status ?? "NETWORK";
     const method = String(error?.config?.method || "GET").toUpperCase();
     const url = formatErrorUrl(error?.config);

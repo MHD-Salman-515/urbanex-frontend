@@ -129,6 +129,8 @@ export function AuthProvider({ children }) {
     setUser(normalizedUser);
 
     localStorage.setItem(LS_TOKEN, nextToken);
+    localStorage.setItem("access_token", nextToken);
+    localStorage.setItem("token", nextToken);
     localStorage.setItem(LS_USER, JSON.stringify(normalizedUser));
   }, []);
 
