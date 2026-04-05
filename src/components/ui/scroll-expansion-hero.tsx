@@ -26,35 +26,52 @@ export default function ScrollExpandMedia({
   const [scrollProgress, setScrollProgress] = useState(0);
   const [mediaFullyExpanded, setMediaFullyExpanded] = useState(false);
   const [showContent, setShowContent] = useState(false);
+  const [isMobileState, setIsMobileState] = useState(
+    typeof window !== "undefined" ? window.innerWidth < 768 : false
+  );
 
   useEffect(() => {
-    if (!mediaFullyExpanded) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
+    const onResize = () => setIsMobileState(window.innerWidth < 768);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [mediaFullyExpanded]);
+  const handleScroll = () => {
+    if (!mediaFullyExpanded) {
+      window.scrollTo(0, 0);
+    }
+  };
 
   const handleWheel = (e: WheelEvent) => {
-    const delta = e.deltaY;
-
-    // 🚫 إذا لسا ما توسّع → نتحكم بالسكرول
-    if (!mediaFullyExpanded || delta < 0) {
+    if (mediaFullyExpanded && e.deltaY < 0 && window.scrollY <= 5) {
       e.preventDefault();
 
-      const next = Math.min(Math.max(scrollProgress + delta * 0.0015, 0), 1);
+      const newProgress = Math.max(scrollProgress + e.deltaY * 0.001, 0);
+      setScrollProgress(newProgress);
 
-      setScrollProgress(next);
-      console.log("progress:", next);
+      if (newProgress <= 0) {
+        setMediaFullyExpanded(false);
+        setShowContent(false);
+      }
 
-      if (next >= 1) {
+      return;
+    }
+
+    if (!mediaFullyExpanded) {
+      e.preventDefault();
+
+      const scrollDelta = e.deltaY * 0.001;
+      const newProgress = Math.min(
+        Math.max(scrollProgress + scrollDelta, 0),
+        1
+      );
+
+      setScrollProgress(newProgress);
+
+      if (newProgress >= 1) {
         setMediaFullyExpanded(true);
         setShowContent(true);
-      } else {
+      } else if (newProgress < 0.75) {
         setMediaFullyExpanded(false);
         setShowContent(false);
       }
@@ -63,14 +80,16 @@ export default function ScrollExpandMedia({
 
   useEffect(() => {
     window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
       window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [scrollProgress, mediaFullyExpanded]);
 
-  const mediaWidth = `${300 + scrollProgress * 1000}px`;
-  const mediaHeight = `${400 + scrollProgress * 500}px`;
+  const mediaWidth = 300 + scrollProgress * (isMobileState ? 650 : 1250);
+  const mediaHeight = 400 + scrollProgress * (isMobileState ? 200 : 400);
   const mediaRadius = mediaFullyExpanded ? 0 : Math.max(24 - scrollProgress * 20, 0);
   const mediaY = mediaFullyExpanded ? 0 : 70 - scrollProgress * 70;
   const headerY = -(Math.min(scrollProgress * 4, 1) * 36);

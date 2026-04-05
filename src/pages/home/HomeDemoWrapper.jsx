@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import HomeDemoFooter from "../../components/home/HomeDemoFooter.jsx";
 import ScrollExpandMedia from "@/components/ui/scroll-expansion-hero";
 import { getFeaturedProperty } from "@/api/heroApi";
-import { api } from "@/api/axios";
 
 const cityImages = {
   Damascus: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
@@ -11,10 +10,32 @@ const cityImages = {
 };
 
 const cities = ["Damascus", "Rif Damascus", "Aleppo"];
+const demoProperties = [
+  {
+    id: 1,
+    title: "Luxury Apartment Damascus",
+    city: "Damascus",
+    price_usd: 120000,
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
+  },
+  {
+    id: 2,
+    title: "Modern Villa",
+    city: "Rif Damascus",
+    price_usd: 250000,
+    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+  },
+  {
+    id: 3,
+    title: "City Apartment",
+    city: "Aleppo",
+    price_usd: 90000,
+    image: "https://images.unsplash.com/photo-1572120360610-d971b9d7767c",
+  },
+];
 
 export default function HomeDemoWrapper() {
   const [loadingHero, setLoadingHero] = useState(true);
-  const [properties, setProperties] = useState([]);
   const [heroData, setHeroData] = useState({
     title: "Urbanex Real Estate",
     city: "Damascus",
@@ -69,30 +90,6 @@ export default function HomeDemoWrapper() {
   }, []);
 
   useEffect(() => {
-    let cancelled = false;
-
-    const loadProperties = async () => {
-      try {
-        const res = await api.get("/properties");
-        const raw = Array.isArray(res?.data)
-          ? res.data
-          : Array.isArray(res?.data?.data)
-            ? res.data.data
-            : [];
-        if (!cancelled) setProperties(raw);
-      } catch (err) {
-        console.error("Properties load failed", err);
-        if (!cancelled) setProperties([]);
-      }
-    };
-
-    loadProperties();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  useEffect(() => {
     if (!heroData.city) return;
     setHeroData((prev) => {
       const nextBg = cityImages[prev.city] || prev.background;
@@ -123,15 +120,6 @@ export default function HomeDemoWrapper() {
     );
   }
 
-  const getImage = (p) => {
-    return (
-      p?.image_url ||
-      p?.image ||
-      p?.thumbnail ||
-      "https://images.unsplash.com/photo-1560185127-6ed189bf02f4"
-    );
-  };
-
   return (
     <div
       className={`min-h-screen overflow-x-hidden bg-[#0B0F19] text-white/90 transition-opacity duration-700 ${
@@ -146,10 +134,10 @@ export default function HomeDemoWrapper() {
                 <button
                   key={city}
                   onClick={() => setHeroData((prev) => ({ ...prev, city }))}
-                    className={`rounded px-3 py-1 text-sm text-white/90 transition ${
-                      heroData.city === city ? "bg-white/35" : "bg-white/20 hover:bg-white/30"
-                    }`}
-                  >
+                  className={`rounded px-3 py-1 text-sm text-white/90 transition ${
+                    heroData.city === city ? "bg-white/35" : "bg-white/20 hover:bg-white/30"
+                  }`}
+                >
                   {city}
                 </button>
               ))}
@@ -220,21 +208,21 @@ export default function HomeDemoWrapper() {
               <h2 className="mb-10 text-center text-3xl font-bold">أبرز العقارات</h2>
 
               <div className="grid gap-6 md:grid-cols-3">
-                {properties.slice(0, 3).map((p) => (
+                {demoProperties.slice(0, 3).map((p) => (
                   <div
                     key={p.id}
                     className="group overflow-hidden rounded-xl bg-white/5 backdrop-blur transition duration-500 hover:scale-105"
                   >
                     <img
-                      src={getImage(p)}
-                      alt={p.title || "Property"}
+                      src={p.image}
+                      alt={p.title}
                       className="h-48 w-full object-cover transition duration-500 group-hover:brightness-110"
                     />
 
                     <div className="p-4">
-                      <h3 className="font-bold">{p.title || "Property"}</h3>
-                      <p className="text-sm text-white/60">{p.city || "Damascus"}</p>
-                      <p className="font-bold text-[#00E5A8]">${p.price_usd ?? p.price ?? p.price_syp ?? "—"}</p>
+                      <h3 className="font-bold">{p.title}</h3>
+                      <p className="text-sm text-white/60">{p.city}</p>
+                      <p className="font-bold text-[#00E5A8]">${p.price_usd}</p>
                     </div>
                   </div>
                 ))}
