@@ -55,29 +55,6 @@ export function ToastProvider({ children }) {
     } catch {}
   }, [history, storageKey]);
 
-  useEffect(() => {
-    function onNotifyAdd(e) {
-      if (!storageKey) return;
-      const d = e?.detail || {};
-      const ts = Number(d.time || d.createdAt || Date.now());
-      const item = {
-        id: idRef.current++,
-        message: d.message || d.text || "Notification",
-        type: d.type || "info",
-        title: d.title || "",
-        at: d.at || new Date(ts).toISOString(),
-        time: ts,
-        href: d.href || "",
-        hrefLabel: d.hrefLabel || "",
-        meta: d.meta,
-      };
-      setHistory((prev) => [item, ...prev]);
-    }
-
-    window.addEventListener("notify:add", onNotifyAdd);
-    return () => window.removeEventListener("notify:add", onNotifyAdd);
-  }, [storageKey]);
-
   const remove = useCallback((id) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);

@@ -5,9 +5,7 @@ const KEY_PREFIX = "notifications:v1:";
 type Identity = { userId: string; role?: string; name?: string };
 
 const ROLE_LABELS: Record<string, string> = {
-  clint: "Client",
   client: "Client",
-  suppliser: "Supplier",
   supplier: "Supplier",
   accounter: "Accountant",
   accountant: "Accountant",

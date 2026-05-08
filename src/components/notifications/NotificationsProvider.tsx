@@ -1,179 +1,252 @@
-import { createContext, useEffect, useMemo, useState } from "react";
-import type { ReactNode } from "react";
-
-import { useAuth } from "@/context/AuthContext.jsx";
-import type { NotificationItem, NotificationType } from "@/lib/notifications/types";
 import {
-  add,
-  clearAll as clearAllStore,
-  getUserIdentity,
-  load,
-  markAllRead as markAllReadStore,
-  markRead as markReadStore,
-  normalizeRoleLabel,
-  save,
-} from "@/lib/notifications/storage";
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import type { ReactNode } from "react";
+import { useAuth } from "@/context/AuthContext.jsx";
+import { useToast } from "@/components/ToastProvider.jsx";
+import { API_BASE, getStoredAccessToken } from "@/api/axios";
+import type { NotificationItem, NotificationType } from "@/lib/notifications/types";
+
+export type BackendNotification = {
+  id: number;
+  userId: number;
+  type: string;
+  title: string;
+  body: string;
+  isRead: boolean;
+  metadata: Record<string, unknown> | null;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type NotificationsFilter = "all" | NotificationType;
 
-type NotifyPayload = {
-  type: NotificationType;
-  title: string;
-  message: string;
-};
-
 export type NotificationsContextValue = {
+  notifications: BackendNotification[];
+  unreadCount: number;
+  markAsRead: (id: number) => Promise<void>;
+  markAllRead: () => Promise<void>;
+  // backward compat for existing bell UI
   userId: string;
   items: NotificationItem[];
-  unreadCount: number;
   activeFilter: NotificationsFilter;
   setActiveFilter: (value: NotificationsFilter) => void;
-  notify: (payload: NotifyPayload) => void;
-  markRead: (id: string) => void;
-  markAllRead: () => void;
+  markRead: (id: string) => Promise<void>;
+  notify: () => void;
   clearAll: () => void;
 };
 
 export const NotificationsContext = createContext<NotificationsContextValue | null>(null);
 
-const GLOBAL_EVENT = "notifications:push";
-const LEGACY_EVENT = "notify:add";
-
-function resolveFromAuth(user: unknown, token: unknown): { userId: string; role: string; name: string } {
-  const fallback = getUserIdentity(user, token);
-  const u = user as Record<string, unknown> | null;
-
-  if (u) {
-    const userIdRaw = u.id || u._id || u.userId || u.user_id || u.email;
-    const userId = typeof userIdRaw === "string" ? userIdRaw : typeof userIdRaw === "number" ? String(userIdRaw) : fallback.userId;
-
-    const roleRaw = u.role;
-    const role = normalizeRoleLabel(typeof roleRaw === "string" && roleRaw.trim() ? roleRaw : fallback.role || "Guest");
-
-    const nameRaw = u.full_name || u.fullName || u.name;
-    const name = typeof nameRaw === "string" && nameRaw.trim() ? nameRaw : fallback.name || "Guest";
-
-    return { userId, role, name };
-  }
-
-  if (typeof token === "string" && token.includes(".")) {
-    try {
-      const payload = JSON.parse(atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))) as Record<string, unknown>;
-      const idRaw = payload.sub || payload.id || payload.userId || payload.user_id || payload.email;
-      const userId = typeof idRaw === "string" ? idRaw : typeof idRaw === "number" ? String(idRaw) : fallback.userId;
-      const roleRaw = payload.role;
-      const role = normalizeRoleLabel(typeof roleRaw === "string" && roleRaw.trim() ? roleRaw : fallback.role || "Guest");
-      const nameRaw = payload.name || payload.full_name || payload.fullName;
-      const name = typeof nameRaw === "string" && nameRaw.trim() ? nameRaw : fallback.name || "Guest";
-      return { userId, role, name };
-    } catch {
-      // ignore
-    }
-  }
-
-  return {
-    userId: fallback.userId,
-    role: normalizeRoleLabel(fallback.role || "Guest"),
-    name: fallback.name || "Guest",
-  };
+export function useNotifications() {
+  return useContext(NotificationsContext);
 }
 
-function inferType(payload: {
-  type?: string;
-  title?: string;
-  message?: string;
-  href?: string;
-}): NotificationType | null {
-  const legacyType = String(payload.type || "").toLowerCase();
-  if (legacyType === "error" || legacyType === "danger" || legacyType === "failed") return null;
-  if (legacyType === "search" || legacyType === "system" || legacyType === "properties") {
-    return legacyType as NotificationType;
-  }
-
-  const text = `${payload.title || ""} ${payload.message || ""} ${payload.href || ""}`.toLowerCase();
-
-  if (text.includes("search") || text.includes("filter")) return "search";
-  if (text.includes("property") || text.includes("favorite") || text.includes("listing")) return "properties";
+function mapType(type: string): NotificationType {
+  if (type === "PROPERTY_APPROVED" || type === "PRICE_ALERT") return "properties";
   return "system";
 }
 
-export function notify(payload: NotifyPayload): void {
-  if (typeof window === "undefined") return;
-  window.dispatchEvent(new CustomEvent(GLOBAL_EVENT, { detail: payload }));
+function toItem(n: BackendNotification): NotificationItem {
+  return {
+    id: String(n.id),
+    type: mapType(n.type),
+    title: n.title,
+    message: n.body,
+    createdAt: new Date(n.createdAt).getTime(),
+    read: n.isRead,
+  };
 }
+
+// Keep window event API for any legacy callers — now a no-op
+export function notify(): void {}
+
+const BASE = () => API_BASE || "";
 
 export function NotificationsProvider({ children }: { children: ReactNode }) {
   const auth = useAuth();
-  const identity = resolveFromAuth(auth?.user, auth?.token);
+  const toast = useToast();
+  const toastRef = useRef(toast);
+  useEffect(() => { toastRef.current = toast; });
 
-  const [items, setItems] = useState<NotificationItem[]>(() => load(identity.userId));
+  const user = auth?.user;
+  const userId = user ? String((user as Record<string, unknown>).id ?? (user as Record<string, unknown>).sub ?? "") : "";
+
+  const [notifications, setNotifications] = useState<BackendNotification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [activeFilter, setActiveFilter] = useState<NotificationsFilter>("all");
 
-  useEffect(() => {
-    setItems(load(identity.userId));
-    setActiveFilter("all");
-  }, [identity.userId]);
+  const abortRef = useRef<AbortController | null>(null);
+  const reconnectRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mountedRef = useRef(true);
 
   useEffect(() => {
-    save(identity.userId, items);
-  }, [identity.userId, items]);
-
-  useEffect(() => {
-    const onGlobalNotify = (event: Event) => {
-      const custom = event as CustomEvent<NotifyPayload>;
-      const detail = custom.detail;
-      if (!detail?.title || !detail?.message || !detail?.type) return;
-
-      setItems(add(identity.userId, detail));
-    };
-
-    const onLegacyNotify = (event: Event) => {
-      const custom = event as CustomEvent<{ type?: string; title?: string; message?: string; text?: string; href?: string }>;
-      const detail = custom.detail || {};
-      const title = String(detail.title || "Notification").trim();
-      const message = String(detail.message || detail.text || "").trim();
-      const type = inferType({
-        type: detail.type,
-        title,
-        message,
-        href: detail.href,
-      });
-
-      if (!message || !type) return;
-      setItems(add(identity.userId, { type, title, message }));
-    };
-
-    window.addEventListener(GLOBAL_EVENT, onGlobalNotify as EventListener);
-    window.addEventListener(LEGACY_EVENT, onLegacyNotify as EventListener);
+    mountedRef.current = true;
     return () => {
-      window.removeEventListener(GLOBAL_EVENT, onGlobalNotify as EventListener);
-      window.removeEventListener(LEGACY_EVENT, onLegacyNotify as EventListener);
+      mountedRef.current = false;
     };
-  }, [identity.userId]);
+  }, []);
 
-  const value = useMemo<NotificationsContextValue>(() => {
-    const unreadCount = items.reduce((count, item) => count + (item.read ? 0 : 1), 0);
+  // On login: fetch existing notifications + unread count
+  useEffect(() => {
+    if (!userId) {
+      setNotifications([]);
+      setUnreadCount(0);
+      return;
+    }
+    const token = getStoredAccessToken();
+    if (!token) return;
 
-    return {
-      userId: identity.userId,
-      items,
+    const headers: HeadersInit = { Authorization: `Bearer ${token}` };
+    const base = BASE();
+
+    Promise.all([
+      fetch(`${base}/notifications`, { headers }).then((r) => (r.ok ? r.json() : [])),
+      fetch(`${base}/notifications/unread-count`, { headers }).then((r) =>
+        r.ok ? r.json() : { count: 0 }
+      ),
+    ])
+      .then(([list, countData]) => {
+        if (!mountedRef.current) return;
+        if (Array.isArray(list)) setNotifications(list as BackendNotification[]);
+        if (typeof (countData as Record<string, unknown>)?.count === "number")
+          setUnreadCount((countData as { count: number }).count);
+      })
+      .catch(() => {});
+  }, [userId]);
+
+  // SSE connection — uses fetch() because EventSource doesn't support auth headers
+  const connectSse = useCallback(() => {
+    const token = getStoredAccessToken();
+    if (!token || !mountedRef.current) return;
+
+    abortRef.current?.abort();
+    abortRef.current = new AbortController();
+    const { signal } = abortRef.current;
+
+    (async () => {
+      try {
+        const res = await fetch(`${BASE()}/notifications/stream`, {
+          headers: { Authorization: `Bearer ${token}` },
+          signal,
+        });
+
+        if (!res.ok || !res.body) return;
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        let pendingEvent = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() ?? "";
+
+          for (const line of lines) {
+            const t = line.trimEnd();
+            if (t.startsWith("event:")) {
+              pendingEvent = t.slice(6).trim();
+            } else if (t.startsWith("data:")) {
+              const raw = t.slice(5).trim();
+              if (pendingEvent === "notification" && raw) {
+                try {
+                  const n = JSON.parse(raw) as BackendNotification;
+                  if (mountedRef.current) {
+                    setNotifications((prev) => [n, ...prev]);
+                    setUnreadCount((prev) => prev + 1);
+                    toastRef.current?.info(n.body, { duration: 5000 });
+                  }
+                } catch {}
+                pendingEvent = "";
+              }
+            } else if (t === "") {
+              pendingEvent = "";
+            }
+          }
+        }
+      } catch (err) {
+        if ((err as Error)?.name === "AbortError") return;
+      }
+
+      // Connection dropped — reconnect after 3 s
+      if (mountedRef.current) {
+        reconnectRef.current = setTimeout(connectSse, 3000);
+      }
+    })();
+  }, []); // stable: reads token and base lazily, toast via ref
+
+  useEffect(() => {
+    if (!userId) return;
+    connectSse();
+    return () => {
+      abortRef.current?.abort();
+      if (reconnectRef.current) clearTimeout(reconnectRef.current);
+    };
+  }, [userId, connectSse]);
+
+  const markAsRead = useCallback(async (id: number) => {
+    const token = getStoredAccessToken();
+    if (!token) return;
+    try {
+      const res = await fetch(`${BASE()}/notifications/${id}/read`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) return;
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
+      );
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+    } catch {}
+  }, []);
+
+  const markAllRead = useCallback(async () => {
+    const token = getStoredAccessToken();
+    if (!token) return;
+    try {
+      const res = await fetch(`${BASE()}/notifications/read-all`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) return;
+      setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+      setUnreadCount(0);
+    } catch {}
+  }, []);
+
+  const value = useMemo<NotificationsContextValue>(
+    () => ({
+      notifications,
       unreadCount,
+      markAsRead,
+      markAllRead,
+      userId,
+      items: notifications.map(toItem),
       activeFilter,
       setActiveFilter,
-      notify: (payload) => {
-        setItems(add(identity.userId, payload));
-      },
-      markRead: (id) => {
-        setItems(markReadStore(identity.userId, id));
-      },
-      markAllRead: () => {
-        setItems(markAllReadStore(identity.userId));
-      },
+      markRead: (id: string) => markAsRead(Number(id)),
+      notify: () => {},
       clearAll: () => {
-        setItems(clearAllStore(identity.userId));
+        setNotifications([]);
+        setUnreadCount(0);
       },
-    };
-  }, [activeFilter, identity.userId, items]);
+    }),
+    [notifications, unreadCount, markAsRead, markAllRead, userId, activeFilter]
+  );
 
-  return <NotificationsContext.Provider value={value}>{children}</NotificationsContext.Provider>;
+  return (
+    <NotificationsContext.Provider value={value}>
+      {children}
+    </NotificationsContext.Provider>
+  );
 }

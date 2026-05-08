@@ -14,8 +14,6 @@ export const AUTH_LOGIN_PATH = "/api/auth/login";
 export const AUTH_REGISTER_PATH = "/api/auth/register";
 export const AUTH_ME_PATH = "/api/auth/me";
 
-console.log("API BASE URL:", API_BASE);
-
 export const API_ORIGIN = (() => {
   try {
     return new URL(API_BASE).origin;
