@@ -2,9 +2,6 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Suspense, lazy, useEffect } from "react";
 
-// 🟢 Providers
-import { ToastProvider } from "./components/ToastProvider.jsx";
-
 // ===== Error Boundary =====
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
@@ -115,8 +112,7 @@ function ScrollToTop() {
 
 export default function App() {
   return (
-    <ToastProvider>
-      <BrowserRouter>
+    <BrowserRouter>
           <ScrollToTop />
           <ErrorBoundary>
             <Suspense fallback={<PageLoader />}>
@@ -248,7 +244,6 @@ export default function App() {
               </Routes>
             </Suspense>
           </ErrorBoundary>
-      </BrowserRouter>
-    </ToastProvider>
+    </BrowserRouter>
   );
 }
