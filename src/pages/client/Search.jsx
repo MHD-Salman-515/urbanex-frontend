@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useToast } from "../../components/ToastProvider.jsx";
 import { store } from "../../lib/clientStore.js";
-import { buildApiUrl, resolveApiAssetUrl } from "../../api/axios";
+import api, { resolveApiAssetUrl } from "../../api/axios";
 import { useNotifications } from "@/components/notifications/useNotifications";
 import { useAuth } from "@/context/AuthContext.jsx";
 import { requireAuthOrRedirect } from "@/utils/requireAuthAction";
@@ -109,8 +109,7 @@ export default function Search() {
           return;
         }
 
-        const res = await fetch(buildApiUrl("/properties"));
-        const all = await res.json();
+        const { data: all } = await api.get("/properties");
 
         // 🔹 تجهيز العقارات لتتناسب مع الصفحة (نفس شغل الهوم)
         let formatted = all.map((p) => ({

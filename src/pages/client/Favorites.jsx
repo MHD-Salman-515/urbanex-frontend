@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useToast } from "../../components/ToastProvider.jsx";
 import { store } from "../../lib/clientStore.js";
 import { Link } from "react-router-dom";
-import { buildApiUrl, resolveApiAssetUrl } from "../../api/axios";
+import api, { resolveApiAssetUrl } from "../../api/axios";
 import { useNotifications } from "@/components/notifications/useNotifications";
 
 export default function Favorites() {
@@ -25,11 +25,10 @@ export default function Favorites() {
       const results = [];
 
       for (const id of favIds) {
-        const res = await fetch(buildApiUrl(`/properties/${id}`));
-        if (res.ok) {
-          const data = await res.json();
+        try {
+          const { data } = await api.get(`/properties/${id}`);
           results.push(data);
-        }
+        } catch {}
       }
 
       setItems(results);

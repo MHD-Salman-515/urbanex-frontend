@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useToast } from "../../components/ToastProvider.jsx";
-import { buildApiUrl, resolveApiAssetUrl } from "../../api/axios";
+import api, { resolveApiAssetUrl } from "../../api/axios";
 import { getAllProperties } from "@/data/propertiesStore";
 
 const USE_LOCAL_DATA = import.meta.env.VITE_DATA_SOURCE === "local";
@@ -32,8 +32,7 @@ export default function Properties() {
           return;
         }
 
-        const res = await fetch(buildApiUrl("/properties"));
-        const data = await res.json();
+        const { data } = await api.get("/properties");
         if (cancelled) return;
         setProperties(Array.isArray(data) ? data : []);
         setHasMore(false);

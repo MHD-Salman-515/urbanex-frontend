@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useToast } from "../../components/ToastProvider.jsx";
 import { store } from "../../lib/clientStore.js";
 import { notifyCrudError, notifyCrudSuccess } from "../../utils/notify.js";
-import { buildApiUrl } from "../../api/axios";
+import api from "../../api/axios";
 import { useNotifications } from "@/components/notifications/useNotifications";
 
 export default function BookVisit() {
@@ -54,15 +54,7 @@ export default function BookVisit() {
         notes: draft.note || "",
       };
 
-      const res = await fetch(buildApiUrl("/appointments"), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) throw new Error("Server Error");
-
-      const created = await res.json();
+      const { data: created } = await api.post("/appointments", payload);
 
       let whenNice = draft.when;
       try {

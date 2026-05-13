@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useRef } from "react";
 import { useToast } from "../../components/ToastProvider.jsx";
 import { notifyCrudError, notifyCrudSuccess } from "../../utils/notify.js";
-import { buildApiUrl } from "../../api/axios";
+import api from "../../api/axios";
 import { useNotifications } from "@/components/notifications/useNotifications";
 
 export default function Appointments() {
@@ -15,8 +15,7 @@ export default function Appointments() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(buildApiUrl("/appointments"));
-        const data = await res.json();
+        const { data } = await api.get("/appointments");
 
         if (!Array.isArray(data)) {
           console.error("Expected array, got:", data);
@@ -77,27 +76,7 @@ export default function Appointments() {
       // 2) حذف من الـ backend
       (async () => {
         try {
-          const res = await fetch(buildApiUrl(`/appointments/${id}`), {
-            method: "DELETE",
-          });
-
-          if (!res.ok) {
-            console.error("Delete failed, status:", res.status);
-            notifyCrudError("Failed to delete appointment");
-            // بما إنو فشل، رجّع الكرت (اختياري):
-            setRows((prev) =>
-              prev.map((r) =>
-                r.id === id
-                  ? {
-                      ...r,
-                      removing: false,
-                      status: "pending",
-                    }
-                  : r
-              )
-            );
-            return;
-          }
+          await api.delete(`/appointments/${id}`);
 
           // 3) زيادة عدّاد الملغاة + حذف من الـ state
           setCancelledCount((c) => c + 1);
@@ -114,6 +93,13 @@ export default function Appointments() {
         } catch (err) {
           console.error(err);
           notifyCrudError("Failed to delete appointment");
+          setRows((prev) =>
+            prev.map((r) =>
+              r.id === id
+                ? { ...r, removing: false, status: "pending" }
+                : r
+            )
+          );
         }
       })();
 

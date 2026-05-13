@@ -117,7 +117,6 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        console.log("TRY REFRESH");
         const refreshResponse = await axios.post(
           REFRESH_URL,
           {},

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useToast } from "../../components/ToastProvider.jsx";
 import { store } from "../../lib/clientStore.js";
-import { buildApiUrl, resolveApiAssetUrl } from "../../api/axios";
+import api, { resolveApiAssetUrl } from "../../api/axios";
 import { useNotifications } from "@/components/notifications/useNotifications";
 import { useAuth } from "@/context/AuthContext.jsx";
 import { requireAuthOrRedirect } from "@/utils/requireAuthAction";
@@ -53,8 +53,7 @@ export default function PropertyDetails() {
           return;
         }
 
-        const res = await fetch(buildApiUrl(`/properties/${id}`));
-        const data = await res.json();
+        const { data } = await api.get(`/properties/${id}`);
         setItem(data);
       } catch {
         toast.error("فشل تحميل تفاصيل العقار");
