@@ -23,7 +23,7 @@ function pickArray<T = any>(payload: any): T[] {
 }
 
 export async function getAdminMarketSnapshots(): Promise<MarketSnapshot[]> {
-  const res = await api.get("/admin/market/snapshots");
+  const res = await api.get("/admin/market/areas");
   return pickArray<MarketSnapshot>(res.data).map((row, idx) => ({
     ...row,
     id: row.id ?? idx,

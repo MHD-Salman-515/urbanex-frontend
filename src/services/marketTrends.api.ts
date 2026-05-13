@@ -13,8 +13,14 @@ export interface MarketTrendResponse {
 }
 
 export async function getMarketTrends(params: Record<string, string | number | undefined> = {}): Promise<MarketTrendResponse> {
+  const merged: Record<string, string | number | undefined> = {
+    city: "damascus",
+    district: "mazzeh",
+    property_type: "apartment",
+    ...params,
+  };
   const query = new URLSearchParams();
-  Object.entries(params).forEach(([k, v]) => {
+  Object.entries(merged).forEach(([k, v]) => {
     if (v === undefined || v === null || v === "") return;
     query.set(k, String(v));
   });
