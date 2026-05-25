@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import ChatMessageList from "@/components/owner-chat/ChatMessageList";
 import ChatComposer from "@/components/owner-chat/ChatComposer";
 import ChatActionBar from "@/components/owner-chat/ChatActionBar";
+import LocationPickerModal from "@/components/LocationPickerModal.jsx";
 import { useOwnerChatUi } from "@/hooks/chat/useOwnerChatUi";
 import { useToast } from "@/components/ToastProvider.jsx";
 
@@ -16,6 +17,7 @@ export default function OwnerChatPage() {
   const toast = useToast();
   const [inputFocused, setInputFocused] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [showMapPicker, setShowMapPicker] = useState(false);
 
   const {
     sessions,
@@ -93,6 +95,14 @@ export default function OwnerChatPage() {
       toast.error(err?.response?.data?.message || err?.message || "Patch context failed.");
     }
   };
+
+  const lastAssistantMsg = [...messages].reverse().find((m) => m.role === "assistant");
+  const showMapButton = !!(
+    lastAssistantMsg?.content?.includes("📍 حدد الموقع") ||
+    (lastAssistantMsg?.meta?.suggested_actions as any[])?.some(
+      (a: any) => a?.type === "PICK_LOCATION",
+    )
+  );
 
   return (
     <div className="lab-bg relative min-h-[calc(100vh-2rem)] w-full overflow-hidden px-4 py-6 text-white md:px-6">
@@ -188,6 +198,18 @@ export default function OwnerChatPage() {
             <ChatMessageList messages={messages} loading={loadingMessages || sending} />
           </div>
 
+          {showMapButton ? (
+            <div className="px-4 pb-2">
+              <button
+                type="button"
+                onClick={() => setShowMapPicker(true)}
+                className="w-full rounded-xl border border-blue-500/40 bg-blue-600/10 py-2.5 text-sm text-blue-300 hover:bg-blue-600/20 transition font-medium"
+              >
+                📍 حدد الموقع على الخريطة
+              </button>
+            </div>
+          ) : null}
+
           <ChatComposer sending={sending} onSend={sendMessage} onFocusChange={setInputFocused} />
         </motion.div>
 
@@ -220,6 +242,17 @@ export default function OwnerChatPage() {
           }}
         />
       ) : null}
+
+      <LocationPickerModal
+        isOpen={showMapPicker}
+        onClose={() => setShowMapPicker(false)}
+        onConfirm={(loc: { lat: number; lng: number; address: string }) => {
+          sendMessage(
+            `الموقع: ${loc.address} (${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)})`,
+          );
+          setShowMapPicker(false);
+        }}
+      />
     </div>
   );
 }
