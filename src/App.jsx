@@ -48,6 +48,7 @@ import OwnerProperties from "./pages/owner/Properties.jsx";
 import OwnerPropertyEdit from "./pages/owner/PropertyEdit.jsx";
 import OwnerAppointments from "./pages/owner/Appointments.jsx";
 import OwnerChatPage from "./pages/owner/OwnerChatPage";
+import MapPickerPage from "./pages/owner/MapPickerPage";
 import OwnerMarketWatchPage from "./pages/dashboard/owner/OwnerMarketWatchPage";
 import OwnerDecisionSimulatorPage from "./pages/dashboard/owner/OwnerDecisionSimulatorPage";
 
@@ -172,6 +173,8 @@ export default function App() {
                       <Route path="chat" element={<OwnerChatPage />} />
                       <Route path="chat/:sessionId" element={<OwnerChatPage />} />
                     </Route>
+                    {/* Full-screen pages — outside OwnerLayout to avoid sidebar */}
+                    <Route path="/owner/map-picker" element={<MapPickerPage />} />
                   </Route>
 
                   {/* ===== Worker (يتطلب دور worker) ===== */}
