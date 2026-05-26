@@ -1,36 +1,62 @@
-import { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
+import { useState, useEffect, useRef } from 'react';
 
-// Fix Leaflet default marker icon broken by webpack asset hashing
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-});
+export default function LocationPickerModal({ isOpen, onClose, onConfirm }) {
+  const mapRef = useRef(null);
+  const mapInstanceRef = useRef(null);
+  const markerRef = useRef(null);
 
-function MapClickHandler({ onLocationSelect }) {
-  useMapEvents({
-    click(e) {
-      onLocationSelect({ lat: e.latlng.lat, lng: e.latlng.lng });
-    },
-  });
-  return null;
-}
-
-export default function LocationPickerModal({ isOpen, onClose, onConfirm, initialDistrict }) {
   const [selectedPos, setSelectedPos] = useState(null);
   const [address, setAddress] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const defaultCenter = [33.5138, 36.2765]; // Damascus
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // Small delay lets the modal DOM render before Leaflet touches it
+    const timer = setTimeout(() => {
+      if (!mapRef.current || mapInstanceRef.current) return;
+
+      import('leaflet').then((L) => {
+        const leaflet = L.default || L;
+
+        delete leaflet.Icon.Default.prototype._getIconUrl;
+        leaflet.Icon.Default.mergeOptions({
+          iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+          iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+        });
+
+        const map = leaflet.map(mapRef.current).setView([33.5138, 36.2765], 13);
+        mapInstanceRef.current = map;
+
+        leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors',
+        }).addTo(map);
+
+        map.on('click', (e) => {
+          const { lat, lng } = e.latlng;
+          if (markerRef.current) {
+            markerRef.current.setLatLng([lat, lng]);
+          } else {
+            markerRef.current = leaflet.marker([lat, lng]).addTo(map);
+          }
+          setSelectedPos({ lat, lng });
+        });
+      });
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+        markerRef.current = null;
+      }
+    };
+  }, [isOpen]);
 
   useEffect(() => {
-    if (selectedPos) {
-      fetchAddress(selectedPos.lat, selectedPos.lng);
-    }
+    if (selectedPos) fetchAddress(selectedPos.lat, selectedPos.lng);
   }, [selectedPos]);
 
   async function fetchAddress(lat, lng) {
@@ -60,37 +86,18 @@ export default function LocationPickerModal({ isOpen, onClose, onConfirm, initia
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
       <div className="bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden">
-        {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-700">
           <div>
             <h2 className="text-white font-bold text-lg">📍 حدد موقع العقار</h2>
             <p className="text-gray-400 text-sm mt-0.5">اضغط على الخريطة لتحديد الموقع بدقة</p>
           </div>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-white text-2xl leading-none"
-          >
+          <button onClick={onClose} className="text-gray-400 hover:text-white text-2xl leading-none">
             ×
           </button>
         </div>
 
-        {/* Map */}
-        <div className="h-80 w-full">
-          <MapContainer
-            center={defaultCenter}
-            zoom={13}
-            style={{ height: '100%', width: '100%' }}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution="© OpenStreetMap contributors"
-            />
-            <MapClickHandler onLocationSelect={setSelectedPos} />
-            {selectedPos && <Marker position={[selectedPos.lat, selectedPos.lng]} />}
-          </MapContainer>
-        </div>
+        <div ref={mapRef} className="h-80 w-full" />
 
-        {/* Address display */}
         <div className="px-5 py-3 bg-gray-800 min-h-[48px] flex items-center">
           {loading ? (
             <span className="text-gray-400 text-sm">جاري تحديد العنوان...</span>
@@ -101,7 +108,6 @@ export default function LocationPickerModal({ isOpen, onClose, onConfirm, initia
           )}
         </div>
 
-        {/* Footer */}
         <div className="flex gap-3 px-5 py-4 border-t border-gray-700">
           <button
             onClick={onClose}
