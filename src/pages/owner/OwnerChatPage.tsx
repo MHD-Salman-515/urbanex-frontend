@@ -94,11 +94,22 @@ export default function OwnerChatPage() {
     }
   };
 
-  const lastAssistantMsg = [...messages].reverse().find((m) => m.role === "assistant");
   const showMapButton = !!(
-    lastAssistantMsg?.content?.includes("📍") || lastAssistantMsg?.content?.includes("حدد الموقع") ||
-    (lastAssistantMsg?.meta?.suggested_actions as any[])?.some(
-      (a: any) => a?.action === "PICK_LOCATION" || a?.type === "PICK_LOCATION",
+    messages.some((m) =>
+      m.role === "assistant" && (
+        m.content?.includes("📍") ||
+        m.content?.includes("حدد الموقع") ||
+        (m.meta?.suggested_actions as any[])?.some(
+          (a: any) => a?.action === "PICK_LOCATION" || a?.type === "PICK_LOCATION",
+        )
+      )
+    ) &&
+    !messages.some((m) =>
+      m.role === "user" && (
+        m.content?.includes("الموقع:") ||
+        m.content?.includes("lat=") ||
+        m.content?.includes("lng=")
+      )
     )
   );
 
