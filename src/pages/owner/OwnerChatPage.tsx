@@ -96,9 +96,9 @@ export default function OwnerChatPage() {
 
   const lastAssistantMsg = [...messages].reverse().find((m) => m.role === "assistant");
   const showMapButton = !!(
-    lastAssistantMsg?.content?.includes("📍 حدد الموقع") ||
+    lastAssistantMsg?.content?.includes("📍") || lastAssistantMsg?.content?.includes("حدد الموقع") ||
     (lastAssistantMsg?.meta?.suggested_actions as any[])?.some(
-      (a: any) => a?.type === "PICK_LOCATION",
+      (a: any) => a?.action === "PICK_LOCATION" || a?.type === "PICK_LOCATION",
     )
   );
 
