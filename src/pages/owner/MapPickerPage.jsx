@@ -87,7 +87,7 @@ export default function MapPickerPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          message: `الموقع: ${address} (${pos.lat.toFixed(6)}, ${pos.lng.toFixed(6)})`,
+          message: `الموقع: ${address || 'إحداثيات محددة'} (${pos.lat.toFixed(6)}, ${pos.lng.toFixed(6)})`,
         }),
       });
       navigate(`/owner/chat?session=${sessionId}`);
