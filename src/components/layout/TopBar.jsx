@@ -61,6 +61,7 @@ function profileLinksByRole(role) {
 
   return [
     ...base,
+    { label: "AI Search Chat", to: "/client/chat" },
     { label: "Favorites", to: "/client/favorites" },
     { label: "My Bookings", to: "/client/appointments" },
   ];

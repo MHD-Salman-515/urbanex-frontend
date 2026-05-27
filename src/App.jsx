@@ -35,6 +35,7 @@ import CreateTicket from "./pages/client/CreateTicket.jsx";
 import Tickets from "./pages/client/Tickets.jsx";
 import TicketDetails from "./pages/client/TicketDetails.jsx";
 import Legal from "./pages/client/Legal.jsx";
+import BuyerChatPage from "./pages/client/BuyerChatPage";
 
 
 // ===== Auth pages =====
@@ -148,6 +149,10 @@ export default function App() {
                       <Route path="/property/:id/create-ticket" element={<CreateTicket />} />
                       <Route path="/client/tickets" element={<Tickets />} />
                       <Route path="/client/tickets/:id" element={<TicketDetails />} />
+
+                      {/* مساعد البحث للمشتري */}
+                      <Route path="/client/chat" element={<BuyerChatPage />} />
+                      <Route path="/client/chat/:sessionId" element={<BuyerChatPage />} />
                     </Route>
                   </Route>
 
