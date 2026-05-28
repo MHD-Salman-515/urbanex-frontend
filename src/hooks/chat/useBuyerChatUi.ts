@@ -65,15 +65,15 @@ export function useBuyerChatUi(initialSessionId?: number) {
         const reply = res.data as any;
         const assistantMsg: BuyerChatMessage = {
           id: Date.now() + 1,
-          role: "assistant",
+          role: "assistant" as const,
           content:
-            reply?.response?.text_ar ??
+            reply?.assistantMessage ??
             reply?.text_ar ??
             reply?.message ??
             reply?.text ??
             JSON.stringify(reply),
           createdAt: new Date().toISOString(),
-          meta: reply,
+          meta: reply?.payloadJson ?? reply,
         };
         setMessages((prev) => [...prev, assistantMsg]);
       } catch {
