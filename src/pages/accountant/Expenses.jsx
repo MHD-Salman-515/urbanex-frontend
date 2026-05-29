@@ -4,7 +4,7 @@ import PageHeader from "../../components/PageHeader";
 import Card from "../../components/Card";
 import Table from "../../components/Table";
 import { useToast } from "../../components/ToastProvider";
-import { notifyCrudError, notifyCrudSuccess } from "../../utils/notify.js";
+import { notifyCrudSuccess } from "../../utils/notify.js";
 
 const initialForm = {
   ticketId: "",
@@ -23,7 +23,7 @@ export default function Expenses() {
 
   const load = async () => {
     try {
-      const res = await api.get("/expenses");
+      const res = await api.get("/expenses/supplier");
       setRows(Array.isArray(res.data) ? res.data : []);
       const t = await api.get("/tickets").catch(() => ({ data: [] }));
       setTickets(Array.isArray(t.data) ? t.data : []);
@@ -55,19 +55,6 @@ export default function Expenses() {
     }
   };
 
-  const deleteExpense = (id) => {
-    if (!confirm("Delete this expense?")) return;
-    api
-      .delete(`/expenses/${id}`)
-      .then(() => {
-        notifyCrudSuccess("Expense deleted", "Operation successful", { href: "/accountant/expenses" });
-        load();
-      })
-      .catch(() =>
-        notifyCrudError("Failed to delete expense", "Operation failed", { href: "/accountant/expenses" })
-      );
-  };
-
   const columns = [
     { key: "id", header: "#" },
     { key: "ticket", header: "Ticket", render: (r) => (r.ticketId ? `#${r.ticketId}` : "—") },
@@ -82,18 +69,6 @@ export default function Expenses() {
       key: "date",
       header: "Date",
       render: (r) => (r.createdAt ? new Date(r.createdAt).toLocaleDateString() : "—"),
-    },
-    {
-      key: "actions",
-      header: "Actions",
-      render: (r) => (
-        <button
-          className="inline-flex h-8 items-center justify-center rounded-lg border border-rose-500/40 bg-rose-500/10 px-3 text-xs text-rose-200 transition hover:bg-rose-500/20"
-          onClick={() => deleteExpense(r.id)}
-        >
-          Delete
-        </button>
-      ),
     },
   ];
 

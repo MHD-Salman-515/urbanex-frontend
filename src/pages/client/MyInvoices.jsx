@@ -18,7 +18,7 @@ export default function MyInvoices() {
 
   useEffect(() => {
     api
-      .get("/invoices/my")
+      .get("/invoices")
       .then((res) => setInvoices(Array.isArray(res.data) ? res.data : []))
       .catch(() => setInvoices([]))
       .finally(() => setLoading(false));
