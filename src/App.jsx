@@ -126,9 +126,9 @@ export default function App() {
                 <Route element={<AppLayout />}>
                   {/* ===== Public + Client ===== */}
                   <Route element={<PublicLayout />}>
-                    <Route path="/" element={<HomeDemoWrapper />} />
-                    <Route path="/home" element={<HomeDemoWrapper />} />
-                    <Route path="/home-old" element={<Home />} />
+                    <Route path="/" element={<Home />} />
+                    <Route path="/home" element={<Home />} />
+                    <Route path="/home-old" element={<HomeDemoWrapper />} />
                     <Route path="/intro" element={<Intro />} />
                     <Route path="/search" element={<Search />} />
                     <Route path="/properties" element={<Properties />} />
