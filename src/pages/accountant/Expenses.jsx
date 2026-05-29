@@ -22,7 +22,7 @@ export default function Expenses() {
 
   const load = async () => {
     try {
-      const res = await api.get("/expenses/supplier");
+      const res = await api.get("/expenses");
       setRows(Array.isArray(res.data) ? res.data : []);
       const t = await api.get("/tickets").catch(() => ({ data: [] }));
       setTickets(Array.isArray(t.data) ? t.data : []);
