@@ -4,7 +4,6 @@ import PageHeader from "../../components/PageHeader";
 import Card from "../../components/Card";
 import Table from "../../components/Table";
 import { useToast } from "../../components/ToastProvider";
-import { notifyCrudSuccess } from "../../utils/notify.js";
 
 const initialForm = {
   ticketId: "",
@@ -43,15 +42,15 @@ export default function Expenses() {
       await api.post("/expenses", {
         ticketId: form.ticketId ? Number(form.ticketId) : undefined,
         amount: Number(form.amount),
-        description: form.description || undefined,
+        description: form.description || "—",
         contractorId: form.contractorId ? Number(form.contractorId) : undefined,
       });
-      notifyCrudSuccess("Expense created", "Operation successful", { href: "/accountant/expenses" });
+      alert("تمت العملية بنجاح");
       setShowForm(false);
       setForm(initialForm);
       load();
     } catch {
-      notifyCrudError("Failed to create expense", "Operation failed", { href: "/accountant/expenses" });
+      alert("حدث خطأ");
     }
   };
 
@@ -147,7 +146,7 @@ export default function Expenses() {
               </div>
 
               <div>
-                <label className="text-xs text-slate-300">Description</label>
+                <label className="text-xs text-slate-300">Description *</label>
                 <input
                   type="text"
                   className={inputClass}
