@@ -64,6 +64,9 @@ function profileLinksByRole(role) {
     { label: "AI Search Chat", to: "/client/chat" },
     { label: "Favorites", to: "/client/favorites" },
     { label: "My Bookings", to: "/client/appointments" },
+    { label: "My Invoices", to: "/client/invoices" },
+    { label: "Search History", to: "/client/history" },
+    { label: "Saved Searches", to: "/client/saved-searches" },
   ];
 }
 

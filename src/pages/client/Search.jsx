@@ -28,6 +28,7 @@ export default function Search() {
   );
 
   const [items, setItems] = useState([]);
+  const [advancedOpen, setAdvancedOpen] = useState(false);
   const params = useMemo(() => new URLSearchParams(loc.search), [loc.search]);
   const bedroomsMin = q.bedroomsMin ? Number(q.bedroomsMin) : undefined;
   const furnished = q.furnished === "1" ? true : undefined;
@@ -168,6 +169,21 @@ export default function Search() {
           formatted = formatted.filter((p) => Boolean(p.elevator));
         }
 
+        if (q.district) {
+          formatted = formatted.filter((p) =>
+            (p.neighborhood || "").includes(q.district) ||
+            (p.address || "").includes(q.district)
+          );
+        }
+
+        if (q.minArea) {
+          formatted = formatted.filter((p) => Number(p.area || 0) >= Number(q.minArea));
+        }
+
+        if (q.maxArea) {
+          formatted = formatted.filter((p) => Number(p.area || 0) <= Number(q.maxArea));
+        }
+
         if (sort === "price_asc") {
           formatted = formatted.sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
         } else if (sort === "price_desc") {
@@ -192,6 +208,7 @@ export default function Search() {
     const chips = [];
 
     if (q.city) chips.push({ label: `المدينة: ${q.city}` });
+    if (q.district) chips.push({ label: `الحي: ${q.district}` });
 
     if (q.type) {
       const map = {
@@ -215,6 +232,8 @@ export default function Search() {
     if (furnished) chips.push({ label: "مفروش" });
     if (parking) chips.push({ label: "موقف سيارة" });
     if (elevator) chips.push({ label: "مصعد" });
+    if (q.minArea) chips.push({ label: `مساحة من ${q.minArea} م²` });
+    if (q.maxArea) chips.push({ label: `مساحة حتى ${q.maxArea} م²` });
     if (sort && sort !== "newest") chips.push({ label: `ترتيب: ${sort}` });
 
     return chips;
@@ -254,6 +273,138 @@ export default function Search() {
           تساعدك على اتخاذ القرار.
         </p>
       </div>
+
+      {/* زر الفلاتر المتقدمة */}
+      <div>
+        <button
+          type="button"
+          onClick={() => setAdvancedOpen((v) => !v)}
+          className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-4 py-2 text-sm text-white/80 transition hover:bg-white/[0.08]"
+        >
+          <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6">
+            <path d="M4 6h12M7 10h6M9 14h2" />
+          </svg>
+          {advancedOpen ? "إخفاء الفلاتر المتقدمة" : "فلاتر متقدمة"}
+          <svg
+            viewBox="0 0 20 20"
+            className={`h-3.5 w-3.5 transition-transform ${advancedOpen ? "rotate-180" : ""}`}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+          >
+            <path d="m5 7 5 5 5-5" />
+          </svg>
+        </button>
+      </div>
+
+      {/* لوحة الفلاتر المتقدمة */}
+      {advancedOpen && (
+        <div className="card-glass rounded-2xl border border-white/10 p-4 md:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-xs text-slate-400 mb-1">المدينة</label>
+            <input
+              type="text"
+              value={q.city || ""}
+              onChange={(e) => setParam("city", e.target.value)}
+              placeholder="مثال: دمشق"
+              className="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-white/20"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs text-slate-400 mb-1">الحي</label>
+            <select
+              value={q.district || ""}
+              onChange={(e) => setParam("district", e.target.value)}
+              className="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-white/20"
+            >
+              <option value="">أي حي</option>
+              {[
+                "المزة", "الشعلان", "كفرسوسة", "المالكي", "أبو رمانة",
+                "ركن الدين", "البرامكة", "المهاجرين", "الصالحية", "الميدان",
+              ].map((d) => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs text-slate-400 mb-1">نوع العقار</label>
+            <select
+              value={q.type || ""}
+              onChange={(e) => setParam("type", e.target.value)}
+              className="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-white/20"
+            >
+              <option value="">أي نوع</option>
+              <option value="apartment">شقة</option>
+              <option value="villa">فيلا</option>
+              <option value="office">مكتب</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs text-slate-400 mb-1">الحد الأدنى للسعر (مليون ل.س)</label>
+            <input
+              type="number"
+              min="0"
+              value={q.minPrice ? Math.round(Number(q.minPrice) / 1_000_000) : ""}
+              onChange={(e) => setParam("minPrice", e.target.value ? String(Number(e.target.value) * 1_000_000) : "")}
+              placeholder="0"
+              className="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-white/20"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs text-slate-400 mb-1">الحد الأقصى للسعر (مليون ل.س)</label>
+            <input
+              type="number"
+              min="0"
+              value={q.maxPrice ? Math.round(Number(q.maxPrice) / 1_000_000) : ""}
+              onChange={(e) => setParam("maxPrice", e.target.value ? String(Number(e.target.value) * 1_000_000) : "")}
+              placeholder="غير محدد"
+              className="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-white/20"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs text-slate-400 mb-1">المساحة (م²)</label>
+            <div className="flex gap-2">
+              <input
+                type="number"
+                min="0"
+                value={q.minArea || ""}
+                onChange={(e) => setParam("minArea", e.target.value)}
+                placeholder="من"
+                className="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-white/20"
+              />
+              <input
+                type="number"
+                min="0"
+                value={q.maxArea || ""}
+                onChange={(e) => setParam("maxArea", e.target.value)}
+                placeholder="حتى"
+                className="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-white/20"
+              />
+            </div>
+          </div>
+
+          <div className="sm:col-span-2 lg:col-span-3 flex justify-end">
+            <button
+              type="button"
+              onClick={() => {
+                const next = new URLSearchParams(params);
+                ["city", "district", "type", "minPrice", "maxPrice", "minArea", "maxArea"].forEach((k) =>
+                  next.delete(k)
+                );
+                navigate({ pathname: loc.pathname, search: next.toString() }, { replace: true });
+              }}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80 hover:bg-white/10 transition"
+            >
+              مسح الفلاتر المتقدمة
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ملخص الفلاتر */}
       <div className="card-glass rounded-2xl border border-white/10 p-4 md:p-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -309,11 +460,9 @@ export default function Search() {
           type="button"
           onClick={() => {
             const next = new URLSearchParams(params);
-            next.delete("bedroomsMin");
-            next.delete("furnished");
-            next.delete("parking");
-            next.delete("elevator");
-            next.delete("sort");
+            ["bedroomsMin", "furnished", "parking", "elevator", "sort",
+             "city", "district", "type", "minPrice", "maxPrice", "minArea", "maxArea"
+            ].forEach((k) => next.delete(k));
             navigate({ pathname: loc.pathname, search: next.toString() }, { replace: true });
           }}
           className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/90"

@@ -36,6 +36,9 @@ import Tickets from "./pages/client/Tickets.jsx";
 import TicketDetails from "./pages/client/TicketDetails.jsx";
 import Legal from "./pages/client/Legal.jsx";
 import BuyerChatPage from "./pages/client/BuyerChatPage";
+import MyInvoices from "./pages/client/MyInvoices";
+import BuyerHistory from "./pages/client/BuyerHistory";
+import SavedSearches from "./pages/client/SavedSearches";
 
 
 // ===== Auth pages =====
@@ -80,6 +83,7 @@ const AgentLinkOps = lazy(() => import("./pages/agent/LinkOps.jsx"));
 // ===== Accountant (lazy) =====
 const AccountantLayout = lazy(() => import("./layouts/AccountantLayout.jsx"));
 const SalesInvoices = lazy(() => import("./pages/accountant/SalesInvoices.jsx"));
+const Expenses = lazy(() => import("./pages/accountant/Expenses.jsx"));
 const RentInvoices = lazy(() => import("./pages/accountant/RentInvoices.jsx"));
 const RecordPayments = lazy(() => import("./pages/accountant/RecordPayments.jsx"));
 const SupplierInvoices = lazy(() => import("./pages/accountant/SupplierInvoices.jsx"));
@@ -153,6 +157,11 @@ export default function App() {
                       {/* مساعد البحث للمشتري */}
                       <Route path="/client/chat" element={<BuyerChatPage />} />
                       <Route path="/client/chat/:sessionId" element={<BuyerChatPage />} />
+
+                      {/* صفحات إضافية للعميل */}
+                      <Route path="/client/invoices" element={<MyInvoices />} />
+                      <Route path="/client/history" element={<BuyerHistory />} />
+                      <Route path="/client/saved-searches" element={<SavedSearches />} />
                     </Route>
                   </Route>
 
@@ -227,6 +236,7 @@ export default function App() {
                       <Route path="cost-allocation" element={<CostAllocation />} />
                       <Route path="income" element={<AccountantIncome />} />
                       <Route path="aging" element={<AccountantAging />} />
+                      <Route path="expenses" element={<Expenses />} />
                     </Route>
                   </Route>
 
