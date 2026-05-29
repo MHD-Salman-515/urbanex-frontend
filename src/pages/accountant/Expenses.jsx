@@ -45,12 +45,12 @@ export default function Expenses() {
         description: form.description || "—",
         contractorId: form.contractorId ? Number(form.contractorId) : undefined,
       });
-      alert("تمت العملية بنجاح");
+      toast.success("تمت إضافة المصروف بنجاح");
       setShowForm(false);
       setForm(initialForm);
       load();
     } catch {
-      alert("حدث خطأ");
+      toast.error("فشل إنشاء المصروف");
     }
   };
 
