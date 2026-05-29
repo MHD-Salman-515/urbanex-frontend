@@ -6,7 +6,10 @@ export default {
       colors: {
         offwhite: "#F8F7F3",
         gold: "#D4AF37",
+        "gold-dim": "#e9c349",
         goldSoft: "#EADBA6",
+        dark: "#1b1c1c",
+        "dark-2": "#0d0d0d",
         green: {
           DEFAULT: "#0F9D58",
           dark: "#0B7F47",

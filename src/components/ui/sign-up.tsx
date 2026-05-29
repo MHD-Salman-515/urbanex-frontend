@@ -81,56 +81,13 @@ interface AuthComponentProps {
 }
 
 const SIGN_UP_STYLES = `
-  @property --glass-angle {
-    syntax: "<angle>";
-    inherits: false;
-    initial-value: 130deg;
-  }
-
-  .glass-button-wrap {
-    position: relative;
-    --glass-angle: 130deg;
-  }
-
-  .glass-button {
-    appearance: none;
-    border: 1px solid rgba(255,255,255,0.18);
-    background:
-      linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.06)),
-      linear-gradient(var(--glass-angle), rgba(255,255,255,0.24), rgba(255,255,255,0.04));
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.35),
-      inset 0 -1px 0 rgba(255,255,255,0.08),
-      0 8px 24px rgba(0,0,0,0.25);
-    backdrop-filter: blur(8px) saturate(135%);
-    -webkit-backdrop-filter: blur(8px) saturate(135%);
-    color: hsl(var(--foreground));
-    transform: translateY(0);
-  }
-
-  .glass-button:hover {
-    --glass-angle: 220deg;
-    border-color: rgba(255,255,255,0.3);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.42),
-      inset 0 -1px 0 rgba(255,255,255,0.12),
-      0 12px 30px rgba(0,0,0,0.3);
-  }
-
-  .glass-button:active {
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.25),
-      inset 0 -1px 0 rgba(255,255,255,0.1),
-      0 4px 16px rgba(0,0,0,0.2);
-  }
-
-  .glass-button-shadow {
-    position: absolute;
+  #auth-aura {
+    position: fixed;
     inset: 0;
-    transform: translateY(10px) scale(0.98);
-    filter: blur(18px);
-    background: radial-gradient(70% 80% at 50% 20%, rgba(255,255,255,0.35), rgba(0,0,0,0));
-    z-index: 0;
+    pointer-events: none;
+    z-index: 1;
+    background: radial-gradient(600px circle at var(--ax, 50%) var(--ay, 50%), rgba(212,175,55,0.07), transparent 80%);
+    mix-blend-mode: screen;
   }
 
   .glass-input-wrap {
@@ -139,48 +96,91 @@ const SIGN_UP_STYLES = `
 
   .glass-input {
     width: 100%;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.17);
-    background: linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.05));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(255,255,255,0.07);
-    color: hsl(var(--foreground));
+    border-radius: 0;
+    border: 0.5px solid rgba(212,175,55,0.2);
+    background: rgba(255,255,255,0.04);
+    color: #ffffff;
+    padding: 0.85rem 1.25rem;
+    font-size: 0.9rem;
     outline: none;
-    backdrop-filter: blur(8px) saturate(130%);
-    -webkit-backdrop-filter: blur(8px) saturate(130%);
+    transition: border-color 0.25s;
+    font-family: 'Inter', sans-serif;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
-
-  .glass-input::placeholder {
-    color: rgba(255,255,255,0.7);
-  }
-
-  .glass-input:focus {
-    border-color: rgba(255,255,255,0.36);
-    box-shadow:
-      0 0 0 3px rgba(255,255,255,0.14),
-      inset 0 1px 0 rgba(255,255,255,0.28),
-      inset 0 -1px 0 rgba(255,255,255,0.1);
-    background: linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.08));
-  }
-
+  .glass-input:focus { border-color: rgba(212,175,55,0.6); }
+  .glass-input::placeholder { color: rgba(255,255,255,0.28); }
   .glass-input:-webkit-autofill,
   .glass-input:-webkit-autofill:hover,
   .glass-input:-webkit-autofill:focus,
   .glass-input:-webkit-autofill:active {
-    -webkit-text-fill-color: hsl(var(--foreground));
-    -webkit-box-shadow: 0 0 0px 1000px rgba(255,255,255,0.07) inset;
+    -webkit-text-fill-color: #ffffff;
+    -webkit-box-shadow: 0 0 0px 1000px #1f2020 inset;
   }
+
+  .glass-button-wrap {
+    position: relative;
+    border-radius: 0 !important;
+  }
+  .glass-button {
+    background: #D4AF37 !important;
+    border: none !important;
+    color: #1b1c1c !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.1em !important;
+    font-size: 0.82rem !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    transform: none !important;
+  }
+  .glass-button:hover { filter: brightness(1.08) !important; }
+  .glass-button:disabled { opacity: 0.5 !important; cursor: not-allowed !important; filter: none !important; }
+  .glass-button-shadow { display: none !important; }
+  .glass-button-text { border-radius: 0 !important; }
+
+  .glass-button-outline {
+    background: transparent !important;
+    border: 0.5px solid rgba(212,175,55,0.4) !important;
+    color: #D4AF37 !important;
+    font-weight: 600 !important;
+  }
+  .glass-button-outline:hover { background: rgba(212,175,55,0.08) !important; filter: none !important; }
 
   .social-button {
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.18);
-    background: rgba(255,255,255,0.08);
-    color: hsl(var(--foreground));
-    backdrop-filter: blur(6px);
+    border: 0.5px solid rgba(212,175,55,0.25);
+    background: rgba(212,175,55,0.04);
+    color: rgba(255,255,255,0.8);
+    border-radius: 0;
+  }
+  .social-button:hover {
+    background: rgba(212,175,55,0.1);
+    border-color: rgba(212,175,55,0.45);
   }
 
-  .social-button:hover {
-    background: rgba(255,255,255,0.14);
-    border-color: rgba(255,255,255,0.32);
+  .label-gold {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    color: rgba(212,175,55,0.8);
+    font-weight: 600;
+    margin-bottom: 0.45rem;
+    display: block;
+    text-align: right;
+    direction: rtl;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .auth-error {
+    background: rgba(239,68,68,0.08);
+    border: 0.5px solid rgba(239,68,68,0.3);
+    color: #fca5a5;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    text-align: right;
+    direction: rtl;
+    width: 100%;
   }
 `;
 
@@ -316,21 +316,12 @@ const GradientBackground = memo(function GradientBackground() {
 });
 
 const AuthBackground = memo(function AuthBackground({ lowPerfMode }: { lowPerfMode: boolean }) {
-  if (lowPerfMode) {
-    return (
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          background:
-            "radial-gradient(120% 90% at 10% 95%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 60%), radial-gradient(90% 85% at 90% 10%, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 65%), linear-gradient(180deg, rgba(5,8,18,0.92), rgba(6,10,20,0.97))",
-        }}
-      />
-    );
-  }
+  void lowPerfMode;
   return (
-    <div className="absolute inset-0 z-0">
-      <GradientBackground />
-    </div>
+    <div
+      className="absolute inset-0 z-0"
+      style={{ background: 'linear-gradient(145deg, #0d0d0d 0%, #1b1c1c 55%, #111111 100%)' }}
+    />
   );
 });
 
@@ -458,11 +449,9 @@ const RegisterStepContent = memo(function RegisterStepContent({
     if (authStep === "email") {
       return (
         <div key="email-step" className="space-y-3">
-          <label className="text-xs font-medium uppercase tracking-wide text-white/85" htmlFor="signup-email">
-            Email
-          </label>
+          <label className="label-gold" htmlFor="signup-email">البريد الإلكتروني</label>
           <div className="glass-input-wrap">
-            <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/70" />
+            <Mail className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2" style={{ color: 'rgba(212,175,55,0.5)' }} />
             <input
               id="signup-email"
               type="email"
@@ -470,13 +459,13 @@ const RegisterStepContent = memo(function RegisterStepContent({
               onChange={(e) => handleEmailChange(e.target.value)}
               autoComplete="email"
               placeholder="name@example.com"
-              className="glass-input py-3 pl-11 pr-4 text-sm"
+              className="glass-input"
+              style={{ paddingRight: '3rem', paddingLeft: '1.25rem', direction: 'ltr', textAlign: 'right' }}
             />
           </div>
           <GlassButton type="button" onClick={handleSendOtp} className="w-full" disabled={!isEmailValid || requestingOtp}>
-            <span className="inline-flex items-center gap-2">
-              {requestingOtp ? "Sending OTP..." : "Send OTP"}
-              <ArrowRight className="h-4 w-4" />
+            <span className="inline-flex items-center justify-center gap-2">
+              {requestingOtp ? "جارٍ الإرسال..." : "إرسال رمز التحقق"}
             </span>
           </GlassButton>
         </div>
@@ -486,11 +475,9 @@ const RegisterStepContent = memo(function RegisterStepContent({
     if (authStep === "otp") {
       return (
         <div key="otp-step" className="space-y-3">
-          <label className="text-xs font-medium uppercase tracking-wide text-white/85" htmlFor="signup-otp">
-            Enter OTP Code
-          </label>
+          <label className="label-gold" htmlFor="signup-otp">رمز التحقق</label>
           <div className="glass-input-wrap">
-            <ShieldCheck className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/70" />
+            <ShieldCheck className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2" style={{ color: 'rgba(212,175,55,0.5)' }} />
             <input
               id="signup-otp"
               ref={otpInputRef}
@@ -501,24 +488,25 @@ const RegisterStepContent = memo(function RegisterStepContent({
                 setOtpInputDraft(next);
                 setOtpCode(next);
               }}
-              placeholder="6 digits"
-              className="glass-input py-3 pl-11 pr-4 text-sm tracking-[0.35em]"
+              placeholder="6 أرقام"
+              className="glass-input tracking-[0.35em]"
+              style={{ paddingRight: '3rem', paddingLeft: '1.25rem', direction: 'ltr', textAlign: 'center' }}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-2">
             <GlassButton type="button" onClick={handleVerifyOtp} disabled={!isOtpValid || verifyingOtp} className="w-full">
-              {verifyingOtp ? "Verifying..." : "Verify OTP"}
+              {verifyingOtp ? "جارٍ التحقق..." : "تحقق"}
             </GlassButton>
-            <GlassButton type="button" onClick={handleResendOtp} disabled={resendCooldown > 0 || requestingOtp} className="w-full">
-              {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend OTP"}
+            <GlassButton type="button" onClick={handleResendOtp} disabled={resendCooldown > 0 || requestingOtp} className="w-full glass-button-outline">
+              {resendCooldown > 0 ? `إعادة إرسال (${resendCooldown}s)` : "إعادة إرسال"}
             </GlassButton>
           </div>
 
-          <GlassButton type="button" size="sm" onClick={handleGoBack} className="w-full">
-            <span className="inline-flex items-center gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Back
+          <GlassButton type="button" size="sm" onClick={handleGoBack} className="w-full glass-button-outline">
+            <span className="inline-flex items-center justify-center gap-2">
+              <ArrowRight className="h-4 w-4" />
+              رجوع
             </span>
           </GlassButton>
         </div>
@@ -527,33 +515,29 @@ const RegisterStepContent = memo(function RegisterStepContent({
 
     return (
       <div key="details-step" className="space-y-3">
-        <label className="text-xs font-medium uppercase tracking-wide text-white/85" htmlFor="signup-name">
-          Full Name
-        </label>
+        <label className="label-gold" htmlFor="signup-name">الاسم الكامل</label>
         <input
           id="signup-name"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
-          className="glass-input py-3 px-4 text-sm"
-          placeholder="Alex Morgan"
+          className="glass-input"
+          placeholder="محمد أحمد"
+          style={{ textAlign: 'right', direction: 'rtl' }}
         />
 
-        <label className="text-xs font-medium uppercase tracking-wide text-white/85" htmlFor="signup-phone">
-          Phone (Optional)
-        </label>
+        <label className="label-gold" htmlFor="signup-phone">رقم الهاتف (اختياري)</label>
         <input
           id="signup-phone"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          className="glass-input py-3 px-4 text-sm"
-          placeholder="+1 555 123 4567"
+          className="glass-input"
+          placeholder="+963 9XX XXX XXXX"
+          style={{ direction: 'ltr', textAlign: 'right' }}
         />
 
-        <label className="text-xs font-medium uppercase tracking-wide text-white/85" htmlFor="signup-password">
-          Password
-        </label>
+        <label className="label-gold" htmlFor="signup-password">كلمة المرور</label>
         <div className="glass-input-wrap">
-          <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/70" />
+          <Lock className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2" style={{ color: 'rgba(212,175,55,0.5)' }} />
           <input
             id="signup-password"
             ref={passwordInputRef}
@@ -561,24 +545,24 @@ const RegisterStepContent = memo(function RegisterStepContent({
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="new-password"
-            placeholder="At least 6 characters"
-            className="glass-input py-3 pl-11 pr-11 text-sm"
+            placeholder="6 أحرف على الأقل"
+            className="glass-input"
+            style={{ paddingRight: '3rem', paddingLeft: '3rem', direction: 'ltr', textAlign: 'right' }}
           />
           <button
             type="button"
             onClick={() => setShowPassword((v) => !v)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 hover:text-white"
-            aria-label={showPassword ? "Hide password" : "Show password"}
+            className="absolute left-3 top-1/2 -translate-y-1/2"
+            style={{ color: 'rgba(255,255,255,0.45)' }}
+            aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
           >
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
 
-        <label className="text-xs font-medium uppercase tracking-wide text-white/85" htmlFor="signup-confirm-password">
-          Confirm Password
-        </label>
+        <label className="label-gold" htmlFor="signup-confirm-password">تأكيد كلمة المرور</label>
         <div className="glass-input-wrap">
-          <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/70" />
+          <Lock className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2" style={{ color: 'rgba(212,175,55,0.5)' }} />
           <input
             id="signup-confirm-password"
             ref={confirmPasswordInputRef}
@@ -586,27 +570,28 @@ const RegisterStepContent = memo(function RegisterStepContent({
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             autoComplete="new-password"
-            placeholder="Retype your password"
-            className="glass-input py-3 pl-11 pr-11 text-sm"
+            placeholder="أعد كتابة كلمة المرور"
+            className="glass-input"
+            style={{ paddingRight: '3rem', paddingLeft: '3rem', direction: 'ltr', textAlign: 'right' }}
           />
           <button
             type="button"
             onClick={() => setShowConfirmPassword((v) => !v)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 hover:text-white"
-            aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+            className="absolute left-3 top-1/2 -translate-y-1/2"
+            style={{ color: 'rgba(255,255,255,0.45)' }}
+            aria-label={showConfirmPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
           >
             {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
 
         <div className="flex gap-2">
-          <GlassButton type="button" size="sm" onClick={handleGoBack} className="shrink-0">
-            <ArrowLeft className="h-4 w-4" />
+          <GlassButton type="button" size="sm" onClick={handleGoBack} className="shrink-0 glass-button-outline">
+            <ArrowRight className="h-4 w-4" />
           </GlassButton>
           <GlassButton type="submit" className="w-full" disabled={!canSubmit}>
-            <span className="inline-flex items-center gap-2">
-              {loading ? "Creating..." : "Create account"}
-              <ArrowRight className="h-4 w-4" />
+            <span className="inline-flex items-center justify-center gap-2">
+              {loading ? "جارٍ الإنشاء..." : "إنشاء حساب"}
             </span>
           </GlassButton>
         </div>
@@ -711,6 +696,7 @@ export const AuthComponent = ({
   const otpInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const confirmPasswordInputRef = useRef<HTMLInputElement>(null);
+  const authCanvasRef = useRef<HTMLCanvasElement>(null);
   const lowPerfMode = true;
   const blurCardClass = "backdrop-blur-sm";
   const blurFadeDisabled = true;
@@ -878,6 +864,50 @@ export const AuthComponent = ({
     setModalStatus("closed");
   }, []);
 
+  useEffect(() => {
+    const aura = document.getElementById('auth-aura');
+    if (!aura) return;
+    const onMove = (e: MouseEvent) => {
+      aura.style.setProperty('--ax', `${e.clientX}px`);
+      aura.style.setProperty('--ay', `${e.clientY}px`);
+    };
+    window.addEventListener('mousemove', onMove, { passive: true });
+    return () => window.removeEventListener('mousemove', onMove);
+  }, []);
+
+  useEffect(() => {
+    const canvas = authCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    resize();
+    window.addEventListener('resize', resize);
+    type P = { x: number; y: number; vy: number; vx: number; size: number; alpha: number; life: number; maxLife: number };
+    const pts: P[] = Array.from({ length: 45 }, () => ({
+      x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight,
+      vy: -(Math.random() * 0.4 + 0.1), vx: (Math.random() - 0.5) * 0.2,
+      size: Math.random() * 2 + 0.5, alpha: Math.random() * 0.4 + 0.1,
+      life: Math.random() * 200, maxLife: 200 + Math.random() * 200,
+    }));
+    let raf: number;
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pts.forEach((p) => {
+        p.life++;
+        if (p.life > p.maxLife) { p.x = Math.random() * canvas.width; p.y = canvas.height + 10; p.life = 0; p.maxLife = 200 + Math.random() * 200; }
+        p.x += p.vx; p.y += p.vy;
+        const prog = p.life / p.maxLife;
+        const a = p.alpha * (prog < 0.1 ? prog / 0.1 : prog > 0.8 ? (1 - prog) / 0.2 : 1);
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(212,175,55,${a})`; ctx.fill();
+      });
+      raf = requestAnimationFrame(draw);
+    };
+    raf = requestAnimationFrame(draw);
+    return () => { window.removeEventListener('resize', resize); cancelAnimationFrame(raf); };
+  }, []);
+
   const handleLoginSubmit = useCallback(async () => {
     perfStart("handleLoginSubmit");
     try {
@@ -893,115 +923,113 @@ export const AuthComponent = ({
 
   if (mode === "login") {
     return (
-      <div className="flex min-h-screen w-screen flex-col bg-background">
+      <div className="flex min-h-screen w-screen flex-col" style={{ background: '#1b1c1c' }}>
         <style>{SIGN_UP_STYLES}</style>
+        <div id="auth-aura" />
+        <canvas ref={authCanvasRef} style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }} />
 
-        <HeaderBrand logo={logo} brandName={brandName} />
+        {/* Brand top-center */}
+        <div className="fixed top-6 left-1/2 z-20" style={{ transform: 'translateX(-50%)' }}>
+          <span style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#D4AF37', fontSize: '1.35rem', fontWeight: 700, letterSpacing: '0.1em' }}>
+            {brandName}
+          </span>
+        </div>
 
-        <div className="relative flex h-full w-full flex-1 items-center justify-center overflow-hidden bg-card">
+        <div className="relative flex h-full w-full flex-1 items-center justify-center overflow-hidden">
           <AuthBackground lowPerfMode={lowPerfMode} />
 
           <fieldset
             disabled={loginLoading}
-            className={cn("relative z-10 mx-auto flex w-[320px] flex-col items-center gap-6 p-4 sm:w-[380px]", blurCardClass)}
+            className="relative z-10 mx-auto flex w-[340px] flex-col gap-5 p-8 sm:w-[400px]"
+            style={{ background: 'rgba(212,175,55,0.03)', border: '0.5px solid rgba(212,175,55,0.18)', backdropFilter: 'blur(20px)' }}
           >
-            <BlurFade className="w-full text-center" delay={0.04} disabled={blurFadeDisabled}>
-              <p className="text-xs uppercase tracking-[0.22em] text-white/80">Sign in</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-foreground">Welcome back to {brandName}</h2>
-              <p className="mt-2 text-sm text-white/80">Access your account securely.</p>
-            </BlurFade>
+            {/* Header */}
+            <div className="text-center" dir="rtl">
+              <p style={{ fontSize: '0.62rem', letterSpacing: '0.22em', color: 'rgba(212,175,55,0.55)', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif" }}>
+                URBANEX
+              </p>
+              <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1.55rem', fontWeight: 700, color: '#ffffff', marginTop: '0.4rem', lineHeight: 1.25 }}>
+                مرحباً بعودتك
+              </h2>
+              <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.42)', marginTop: '0.4rem', fontFamily: "'Inter', sans-serif" }}>
+                سجّل دخولك للوصول إلى حسابك
+              </p>
+            </div>
 
-            {!!loginError ? (
-              <div className="w-full rounded-xl border border-red-300/50 bg-red-500/15 px-3 py-2 text-sm text-red-100" role="alert">
-                {loginError}
-              </div>
-            ) : null}
+            {!!loginError && (
+              <div className="auth-error" role="alert">{loginError}</div>
+            )}
 
-            <div className="w-full space-y-3">
-              <label className="text-xs font-medium uppercase tracking-wide text-white/85" htmlFor="signin-email">
-                Email
-              </label>
-              <div className="glass-input-wrap">
-                <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/70" />
-                <input
-                  id="signin-email"
-                  type="email"
-                  value={loginEmail}
-                  onChange={(e) => {
-                    const next = e.target.value;
-                    setLoginEmail(next);
-                    onEmailChange?.(next);
-                  }}
-                  autoComplete="email"
-                  placeholder="name@example.com"
-                  className="glass-input py-3 pl-11 pr-4 text-sm"
-                />
-              </div>
-
-              <label className="text-xs font-medium uppercase tracking-wide text-white/85" htmlFor="signin-password">
-                Password
-              </label>
-              <div className="glass-input-wrap">
-                <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/70" />
-                <input
-                  id="signin-password"
-                  type={loginShowPassword ? "text" : "password"}
-                  value={loginPassword}
-                  onChange={(e) => {
-                    const next = e.target.value;
-                    setLoginPassword(next);
-                    onPasswordChange?.(next);
-                  }}
-                  autoComplete="current-password"
-                  placeholder="••••••••"
-                  className="glass-input py-3 pl-11 pr-11 text-sm"
-                />
-                <button
-                  type="button"
-                  onClick={() => setLoginShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/80"
-                  aria-label={loginShowPassword ? "Hide password" : "Show password"}
-                >
-                  {loginShowPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
+            <div className="w-full space-y-4" dir="rtl">
+              <div>
+                <label className="label-gold" htmlFor="signin-email">البريد الإلكتروني</label>
+                <div className="glass-input-wrap">
+                  <Mail className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2" style={{ color: 'rgba(212,175,55,0.5)' }} />
+                  <input
+                    id="signin-email"
+                    type="email"
+                    value={loginEmail}
+                    onChange={(e) => { const next = e.target.value; setLoginEmail(next); onEmailChange?.(next); }}
+                    autoComplete="email"
+                    placeholder="name@example.com"
+                    className="glass-input"
+                    style={{ paddingRight: '3rem', paddingLeft: '1.25rem', direction: 'ltr', textAlign: 'right' }}
+                  />
+                </div>
               </div>
 
-              <div className="flex items-center justify-between gap-3 pt-1 text-xs text-slate-100">
-                <label className="inline-flex items-center gap-2">
+              <div>
+                <label className="label-gold" htmlFor="signin-password">كلمة المرور</label>
+                <div className="glass-input-wrap">
+                  <Lock className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2" style={{ color: 'rgba(212,175,55,0.5)' }} />
+                  <input
+                    id="signin-password"
+                    type={loginShowPassword ? "text" : "password"}
+                    value={loginPassword}
+                    onChange={(e) => { const next = e.target.value; setLoginPassword(next); onPasswordChange?.(next); }}
+                    autoComplete="current-password"
+                    placeholder="••••••••"
+                    className="glass-input"
+                    style={{ paddingRight: '3rem', paddingLeft: '3rem', direction: 'ltr', textAlign: 'right' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setLoginShowPassword((v) => !v)}
+                    className="absolute left-3 top-1/2 -translate-y-1/2"
+                    style={{ color: 'rgba(255,255,255,0.45)' }}
+                    aria-label={loginShowPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
+                  >
+                    {loginShowPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between gap-3 pt-1" style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.5)' }}>
+                <Link to="/auth/register" style={{ color: '#D4AF37' }} className="hover:underline">
+                  إنشاء حساب جديد
+                </Link>
+                <label className="inline-flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={loginRemember}
-                    onChange={(e) => {
-                      const next = e.target.checked;
-                      setLoginRemember(next);
-                      onRememberChange?.(next);
-                    }}
-                    className="h-4 w-4 rounded border border-white/15 bg-black/40 text-white/90 focus:ring-white/30"
+                    onChange={(e) => { const next = e.target.checked; setLoginRemember(next); onRememberChange?.(next); }}
+                    className="h-4 w-4"
+                    style={{ accentColor: '#D4AF37' }}
                   />
-                  Remember me
+                  تذكّرني
                 </label>
-
-                <Link to="/auth/register" className="text-white/90 hover:underline">
-                  Create account
-                </Link>
               </div>
 
-              <GlassButton
-                type="button"
-                className="w-full"
-                disabled={loginLoading}
-                onClick={handleLoginSubmit}
-              >
-                <span className="inline-flex items-center gap-2">
-                  {loginLoading ? "Signing in..." : "Sign in"}
-                  <ArrowRight className="h-4 w-4" />
+              <GlassButton type="button" className="w-full" disabled={loginLoading} onClick={handleLoginSubmit}>
+                <span className="inline-flex items-center justify-center gap-2">
+                  {loginLoading ? "جارٍ تسجيل الدخول..." : "تسجيل الدخول"}
                 </span>
               </GlassButton>
             </div>
 
             <div className="w-full text-center">
-              <Link to="/home" className="text-sm text-slate-100 hover:text-white/90 hover:underline">
-                Back to site
+              <Link to="/home" style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.35)' }} className="hover:underline">
+                العودة إلى الموقع
               </Link>
             </div>
           </fieldset>
@@ -1011,91 +1039,110 @@ export const AuthComponent = ({
   }
 
   return (
-    <div className="flex min-h-screen w-screen flex-col bg-background">
+    <div className="flex min-h-screen w-screen flex-col" style={{ background: '#1b1c1c' }}>
       <style>{SIGN_UP_STYLES}</style>
+      <div id="auth-aura" />
+      <canvas ref={authCanvasRef} style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }} />
 
       <AuthModal modalStatus={modalStatus} closeModal={closeModal} mergedError={mergedError} lowPerfMode={lowPerfMode} />
 
-      <HeaderBrand logo={logo} brandName={brandName} />
+      {/* Brand top-center */}
+      <div className="fixed top-6 left-1/2 z-20" style={{ transform: 'translateX(-50%)' }}>
+        <span style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#D4AF37', fontSize: '1.35rem', fontWeight: 700, letterSpacing: '0.1em' }}>
+          {brandName}
+        </span>
+      </div>
 
-      <div className="relative flex h-full w-full flex-1 items-center justify-center overflow-hidden bg-card">
+      <div className="relative flex h-full w-full flex-1 items-center justify-center overflow-hidden py-20">
         <AuthBackground lowPerfMode={lowPerfMode} />
 
         <fieldset
           disabled={loading || modalStatus === "loading"}
-          className={cn("relative z-10 mx-auto flex w-[320px] flex-col items-center gap-6 p-4 sm:w-[380px]", blurCardClass)}
+          className="relative z-10 mx-auto flex w-[340px] flex-col gap-5 p-8 sm:w-[400px]"
+          style={{ background: 'rgba(212,175,55,0.03)', border: '0.5px solid rgba(212,175,55,0.18)', backdropFilter: 'blur(20px)' }}
         >
-            <BlurFade className="w-full text-center" delay={0.04} disabled={blurFadeDisabled}>
-              <p className="text-xs uppercase tracking-[0.22em] text-white/80">Create account</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-foreground">Welcome to {brandName}</h2>
-              <p className="mt-2 text-sm text-white/80">Secure signup with real email OTP verification.</p>
-            </BlurFade>
-
-            {!!mergedError && modalStatus !== "error" ? (
-              <div className="w-full rounded-xl border border-red-300/50 bg-red-500/15 px-3 py-2 text-sm text-red-100">{mergedError}</div>
-            ) : null}
-
-            <form onSubmit={handleFinalSubmit} className="w-full space-y-3">
-              <RegisterStepContent
-                authStep={authStep}
-                lowPerfMode={lowPerfMode}
-                email={email}
-                handleEmailChange={handleEmailChange}
-                isEmailValid={isEmailValid}
-                requestingOtp={requestingOtp}
-                handleSendOtp={handleSendOtp}
-                otpInputDraft={otpInputDraft}
-                setOtpInputDraft={setOtpInputDraft}
-                setOtpCode={setOtpCode}
-                otpInputRef={otpInputRef}
-                isOtpValid={isOtpValid}
-                verifyingOtp={verifyingOtp}
-                handleVerifyOtp={handleVerifyOtp}
-                resendCooldown={resendCooldown}
-                handleResendOtp={handleResendOtp}
-                handleGoBack={handleGoBack}
-                fullName={fullName}
-                setFullName={setFullName}
-                phone={phone}
-                setPhone={setPhone}
-                showPassword={showPassword}
-                setShowPassword={setShowPassword}
-                password={password}
-                setPassword={setPassword}
-                passwordInputRef={passwordInputRef}
-                showConfirmPassword={showConfirmPassword}
-                setShowConfirmPassword={setShowConfirmPassword}
-                confirmPassword={confirmPassword}
-                setConfirmPassword={setConfirmPassword}
-                confirmPasswordInputRef={confirmPasswordInputRef}
-                canSubmit={canSubmit}
-                loading={loading}
-              />
-            </form>
-
-            <BlurFade className="w-full" delay={0.08} disabled={blurFadeDisabled}>
-              <div className="flex items-center gap-3">
-                <span className="h-px flex-1 bg-white/25" />
-                <span className="text-xs uppercase tracking-[0.2em] text-white/75">or</span>
-                <span className="h-px flex-1 bg-white/25" />
-              </div>
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  className="social-button inline-flex items-center justify-center gap-2 px-3 py-2 text-sm"
-                  onClick={() => onGoogle?.()}
+          {/* Step indicators */}
+          <div className="flex items-center justify-center gap-3 mb-1">
+            {(['email', 'otp', 'details'] as const).map((step, i) => (
+              <div key={step} className="flex items-center gap-2">
+                <div
+                  style={{
+                    width: '1.6rem', height: '1.6rem', borderRadius: '50%',
+                    background: authStep === step ? '#D4AF37' : 'rgba(212,175,55,0.15)',
+                    border: `0.5px solid ${authStep === step ? '#D4AF37' : 'rgba(212,175,55,0.3)'}`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '0.7rem', fontWeight: 700,
+                    color: authStep === step ? '#1b1c1c' : 'rgba(212,175,55,0.5)',
+                    transition: 'all 0.3s',
+                  }}
                 >
-                  <GoogleIcon /> Google
-                </button>
-                <button
-                  type="button"
-                  className="social-button inline-flex items-center justify-center gap-2 px-3 py-2 text-sm"
-                  onClick={() => onGitHub?.()}
-                >
-                  <GitHubIcon /> GitHub
-                </button>
+                  {i + 1}
+                </div>
+                {i < 2 && <div style={{ width: '1.5rem', height: '0.5px', background: 'rgba(212,175,55,0.2)' }} />}
               </div>
-            </BlurFade>
+            ))}
+          </div>
+
+          {/* Header */}
+          <div className="text-center" dir="rtl">
+            <p style={{ fontSize: '0.62rem', letterSpacing: '0.22em', color: 'rgba(212,175,55,0.55)', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif" }}>
+              URBANEX
+            </p>
+            <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1.55rem', fontWeight: 700, color: '#ffffff', marginTop: '0.4rem', lineHeight: 1.25 }}>
+              أنشئ حسابك
+            </h2>
+            <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.42)', marginTop: '0.4rem', fontFamily: "'Inter', sans-serif" }}>
+              تسجيل آمن مع التحقق بالبريد الإلكتروني
+            </p>
+          </div>
+
+          {!!mergedError && modalStatus !== "error" && (
+            <div className="auth-error">{mergedError}</div>
+          )}
+
+          <form onSubmit={handleFinalSubmit} className="w-full space-y-3" dir="rtl">
+            <RegisterStepContent
+              authStep={authStep}
+              lowPerfMode={lowPerfMode}
+              email={email}
+              handleEmailChange={handleEmailChange}
+              isEmailValid={isEmailValid}
+              requestingOtp={requestingOtp}
+              handleSendOtp={handleSendOtp}
+              otpInputDraft={otpInputDraft}
+              setOtpInputDraft={setOtpInputDraft}
+              setOtpCode={setOtpCode}
+              otpInputRef={otpInputRef}
+              isOtpValid={isOtpValid}
+              verifyingOtp={verifyingOtp}
+              handleVerifyOtp={handleVerifyOtp}
+              resendCooldown={resendCooldown}
+              handleResendOtp={handleResendOtp}
+              handleGoBack={handleGoBack}
+              fullName={fullName}
+              setFullName={setFullName}
+              phone={phone}
+              setPhone={setPhone}
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
+              password={password}
+              setPassword={setPassword}
+              passwordInputRef={passwordInputRef}
+              showConfirmPassword={showConfirmPassword}
+              setShowConfirmPassword={setShowConfirmPassword}
+              confirmPassword={confirmPassword}
+              setConfirmPassword={setConfirmPassword}
+              confirmPasswordInputRef={confirmPasswordInputRef}
+              canSubmit={canSubmit}
+              loading={loading}
+            />
+          </form>
+
+          <div className="w-full text-center">
+            <Link to="/auth/login" style={{ fontSize: '0.78rem', color: '#D4AF37' }} className="hover:underline">
+              لديك حساب بالفعل؟ تسجيل الدخول
+            </Link>
+          </div>
         </fieldset>
       </div>
     </div>

@@ -7,6 +7,7 @@ import { ToastProvider } from "./components/ToastProvider.jsx";
 import { NotificationsProvider } from "./components/notifications/NotificationsProvider";
 import "./index.css";
 import "./styles/urbanex.css";
+import "./styles/luxury-theme.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <AuthProvider>

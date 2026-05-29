@@ -120,7 +120,7 @@ export default function HeroShowcase({
       <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-5 pb-24 pt-20 sm:px-8 lg:px-12">
         <div className="max-w-2xl">
           <p className="mb-4 inline-flex rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs tracking-[0.2em] text-slate-100">
-            {activeSlide.badge}
+            <span style={{ color: '#D4AF37', marginInlineEnd: '0.4em' }}>✦</span>{activeSlide.badge}
           </p>
           <h1
             className={`text-4xl font-black leading-tight sm:text-5xl lg:text-6xl transition-opacity duration-300 ${isTransitioning ? "opacity-0" : "opacity-100"}`}
