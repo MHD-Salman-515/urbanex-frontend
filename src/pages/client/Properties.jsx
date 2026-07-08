@@ -73,7 +73,7 @@ export default function Properties() {
       title: property.title,
       city: property.city || "—",
       district: property.district || property.address || "—",
-      area: Number(property.area_m2 ?? 0),
+      area: Number(property.area_m2 ?? property.area ?? 0),
       bedrooms: Number(property.bedrooms ?? 0),
       priceLabel:
         property.price_label ||
