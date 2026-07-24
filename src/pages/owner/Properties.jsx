@@ -58,10 +58,8 @@ export default function OwnerProperties() {
         setLoading(true);
         setError("");
 
-        const res = await api.get("/properties");
-        const all = res.data || [];
-
-        const owned = user?.id ? all.filter((p) => p.ownerId === user.id) : all;
+        const res = await api.get("/properties/mine");
+        const owned = res.data || [];
 
         const mapped = owned.map((p) => ({
           id: p.id,
